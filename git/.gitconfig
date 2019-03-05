@@ -1,0 +1,19 @@
+[core]
+    excludesfile = ~/.gitignore_global
+    editor = 'vim'
+    filemode = false
+[user]
+    name = Claude Dioudonnat
+    email = claude@dioudonnat.fr
+
+[alias]
+    lgg = "log --all --graph --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)    %an%Creset' --abbrev-commit"
+    lg = "log --all --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)    %an%Creset' --abbrev-commit"
+    lgb = !git log --pretty=format:'%C(yellow)%h%Creset %Cgreen(%ar) %C(bold blue)%an% %C(red)%d%Creset%n %s %n %b' --no-abbrev-commit -n $(($(git rev-list master..HEAD --count)+1))
+    lgbedm = !git log --pretty=format:'%C(yellow)%h%Creset %Cgreen(%ar) %C(bold blue)%an% %C(red)%d%Creset%n %s %n %b' --no-abbrev-commit -n $(($(git rev-list edm..HEAD --count)+1))
+    lgbf = !git log --pretty=format:'%C(yellow)%h%  %Cgreen(%ar)%Creset %C(red)%d%Creset%n%n       %s%n' --name-only -n $(git rev-list master..HEAD --count) && echo 
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    required = true
+    process = git-lfs filter-process

@@ -4,7 +4,7 @@
     filemode = false
 [user]
     name = Claude Dioudonnat
-    email = claude@dioudonnat.fr
+#    email = claude@dioudonnat.fr
 
 [alias]
     lgg = "log --all --graph --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)    %an%Creset' --abbrev-commit"
@@ -17,3 +17,11 @@
     smudge = git-lfs smudge -- %f
     required = true
     process = git-lfs filter-process
+
+
+[includeIf "gitdir:/**"]
+    path = ~/.gitconfig.personal
+
+[includeIf "gitdir:~/works/**"]
+    path = ~/.gitconfig.works
+

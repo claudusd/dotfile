@@ -15,3 +15,9 @@ stow git
 ```
 stow bashrc
 ```
+
+### prompt
+
+```
+stow prompt
+```

@@ -1,8 +1,8 @@
 # Dotfile
 
-## Use 
+## Use
 
-Install GNU stow 
+Install GNU stow
 
 #### git
 
@@ -10,6 +10,8 @@ Install GNU stow
 stow git
 ```
 
-### git-perso
+### bashrc
 
-``
+```
+stow bashrc
+```

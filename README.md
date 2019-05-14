@@ -21,3 +21,9 @@ stow bashrc
 ```
 stow prompt
 ```
+
+#### vagrant
+
+```
+stow vagrant
+```

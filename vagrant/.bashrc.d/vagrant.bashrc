@@ -8,4 +8,5 @@ if [ $? = 0 ]; then
   if [ -f $VAGRANT_BASH_PATH ]; then
     source $VAGRANT_BASH_PATH
   fi
+  unset VAGRANT_BASH_PATH
 fi

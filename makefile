@@ -19,3 +19,11 @@ dot-vagrant: ## Setup dotfile for vagrant
 
 check-package: ## Check package installed
 	@bin/check_package/main.bash
+
+ssh-personal: ## Setup dotfile for personal's ssh
+	@stow -d ssh/ -t ~/.ssh/ global
+	@stow -d ssh/ -t ~/.ssh/ personal
+
+ssh-work: ## Setup dotfile for work's ssh
+	@stow -d ssh/ -t ~/.ssh/ global
+	@stow -d ssh/ -t ~/.ssh/ work

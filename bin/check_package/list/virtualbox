@@ -1,0 +1,5 @@
+INSTALL_NAME="virtualbox"
+INSTALL_DESCRIPTION="Run VM"
+INSTALL_DOC="https://doc.ubuntu-fr.org/virtualbox"
+INSTALL_REPOSITORY="deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -sc) contrib"
+INSTALL_REPOSITORY_KEY="http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc"

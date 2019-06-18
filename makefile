@@ -16,3 +16,6 @@ dot-prompt: ## Setup dotfile for prompt
 
 dot-vagrant: ## Setup dotfile for vagrant
 	@stow vagrant
+
+check-package: ## Check package installed
+	@bin/check_package/main.bash

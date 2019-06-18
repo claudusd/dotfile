@@ -1,0 +1,3 @@
+INSTALL_NAME="obs"
+INSTALL_DESCRIPTION="Stream on youtube"
+PACKAGE_NAME="obs-studio"

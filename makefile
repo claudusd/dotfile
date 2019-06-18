@@ -6,24 +6,24 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 dot-bashrc: ## Setup dotfile for bashrc
-	@stow bashrc
+	@stow -d stow/ -t ~/ bashrc
 
 dot-git: ## Setup dotfile for git
-	@stow git
+	@stow -d stow/ -t ~/ git
 
 dot-prompt: ## Setup dotfile for prompt
-	@stow prompt
+	@stow -d stow/ -t ~/ prompt
 
 dot-vagrant: ## Setup dotfile for vagrant
-	@stow vagrant
+	@stow -d stow/ -t ~/ vagrant
 
 check-package: ## Check package installed
 	@bin/check_package/main.bash
 
 ssh-personal: ## Setup dotfile for personal's ssh
-	@stow -d ssh/ -t ~/.ssh/ global
-	@stow -d ssh/ -t ~/.ssh/ personal
+	@stow -d stow/ssh/ -t ~/.ssh/ global
+	@stow -d stow/ssh/ -t ~/.ssh/ personal
 
 ssh-work: ## Setup dotfile for work's ssh
-	@stow -d ssh/ -t ~/.ssh/ global
-	@stow -d ssh/ -t ~/.ssh/ work
+	@stow -d stow/ssh/ -t ~/.ssh/ global
+	@stow -d stow/ssh/ -t ~/.ssh/ work

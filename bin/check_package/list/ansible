@@ -1,0 +1,4 @@
+INSTALL_NAME="ansible"
+INSTALL_DESCRIPTION="Provision VM"
+INSTALL_DOC="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-ubuntu"
+INSTALL_REPOSITORY="deb http://ppa.launchpad.net/ansible/ansible/ubuntu $(lsb_release -sc) main"

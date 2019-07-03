@@ -67,6 +67,7 @@ clean_vars() {
   unset INSTALL_URL;
   unset INSTALL_DOC;
   unset INSTALL_REPOSITORY;
+  unset INSTALL_COMMAND;
 }
 
 DIRECTORY=`dirname $0`

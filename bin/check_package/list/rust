@@ -1,0 +1,4 @@
+INSTALL_NAME="rustc"
+INSTALL_DESCRIPTION="Compile Rust"
+INSTALL_DOC="https://www.rust-lang.org/tools/install"
+INSTALL_COMMAND="curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path"

@@ -30,6 +30,8 @@ function installation() {
     fi;
     echo "echo '$INSTALL_REPOSITORY' > /etc/apt/sources.list.d/$INSTALL_NAME.list"
     echo "apt install $PACKAGE_NAME"
+  elif [ -n "$INSTALL_COMMAND" ]; then
+    echo "$INSTALL_COMMAND"
   else
       echo "apt install $PACKAGE_NAME"
   fi

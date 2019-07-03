@@ -8,11 +8,11 @@ if [ -f /etc/lsb-release ]; then
 fi
 
 function installed() {
-  echo "$CHAR_OK $INSTALL_NAME  -  $INSTALL_DESCRIPTION";
+  echo "$CHAR_OK $NAME  -  $INSTALL_DESCRIPTION";
 }
 
 function uninstalled() {
-  echo "$CHAR_KO $INSTALL_NAME  -  $INSTALL_DESCRIPTION";
+  echo "$CHAR_KO $NAME  -  $INSTALL_DESCRIPTION";
 }
 
 function checkInstalled() {
@@ -75,6 +75,7 @@ DIRECTORY=`dirname $0`
 for file in $DIRECTORY/list/*
 do
     if [ -f $file ]; then
+        NAME=$(basename $file);
         source $file;
         check
         clean_vars;

@@ -30,3 +30,6 @@ ssh-work: ## Setup dotfile for work's ssh
 
 dot-vim: ## Setup dotfile for vim
 	@stow -d stow/ -t ~/ vim
+
+dot-rust: ## Setup dotfile for rust
+	@stow -d stow/ -t ~/ rust

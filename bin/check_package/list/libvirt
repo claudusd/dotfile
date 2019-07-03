@@ -1,0 +1,4 @@
+INSTALL_NAME="virsh"
+INSTALL_DESCRIPTION="Lib for virtualisatio"
+PACKAGE_NAME="virtinst"
+INSTALL_DOC="https://guide.ubuntu-fr.org/server/libvirt.html"

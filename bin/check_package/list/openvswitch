@@ -1,0 +1,3 @@
+INSTALL_NAME="ovs-vsctl"
+INSTALL_DESCRIPTION="Manage virtual network"
+PACKAGE_NAME="openvswitch-switch"

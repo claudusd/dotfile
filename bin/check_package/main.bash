@@ -24,16 +24,16 @@ function checkInstalled() {
 function installation() {
   if [ -n "$INSTALL_URL" ]; then
     echo "Installation page : $INSTALL_URL";
-  elif [ -n "$INSTALL_REPOSITORY" ]; then
+  elif [ -n "$INSTALL_COMMAND" ]; then
+    echo "$INSTALL_COMMAND"
+  elif [ -n "$PACKAGE_NAME" ]; then
     if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
       echo "wget -q -O- $INSTALL_REPOSITORY_KEY | sudo apt-key add -"
     fi;
-    echo "echo '$INSTALL_REPOSITORY' > /etc/apt/sources.list.d/$INSTALL_NAME.list"
-    echo "apt install $PACKAGE_NAME"
-  elif [ -n "$INSTALL_COMMAND" ]; then
-    echo "$INSTALL_COMMAND"
-  else
-      echo "apt install $PACKAGE_NAME"
+    if [ -n "$INSTALL_REPOSITORY" ]; then
+      echo "echo '$INSTALL_REPOSITORY' > /etc/apt/sources.list.d/$INSTALL_NAME.list"
+    fi;
+    echo "apt install $PACKAGE_NAME $PACKAGE_NAME_EXTRA"
   fi
 
   if [ -n "$INSTALL_DOC" ]; then
@@ -68,6 +68,7 @@ clean_vars() {
   unset INSTALL_DOC;
   unset INSTALL_REPOSITORY;
   unset INSTALL_COMMAND;
+  unset PACKAGE_NAME_EXTRA;
 }
 
 DIRECTORY=`dirname $0`

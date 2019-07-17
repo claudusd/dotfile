@@ -1,0 +1,4 @@
+INSTALL_NAME="pdflatex"
+INSTALL_DESCRIPTION="Doing nice pdf"
+PACKAGE_NAME="texlive"
+PACKAGE_NAME_EXTRA="texlive-fonts-extra texlive-lang-french"

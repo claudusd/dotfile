@@ -3,16 +3,20 @@
 CHAR_OK=' ✓'
 CHAR_KO=' ✗'
 
+COLOR_RESET='\033[0m'
+COLOR_RED='\033[31m'
+COLOR_GREEN='\033[32m';
+
 if [ -f /etc/lsb-release ]; then
   source /etc/lsb-release
 fi
 
 function installed() {
-  echo "$CHAR_OK $NAME  -  $INSTALL_DESCRIPTION";
+  echo -e "${COLOR_GREEN}${CHAR_OK}${COLOR_RESET} ${NAME}  -  $INSTALL_DESCRIPTION";
 }
 
 function uninstalled() {
-  echo "$CHAR_KO $NAME  -  $INSTALL_DESCRIPTION";
+  echo -e "${COLOR_RED}${CHAR_KO}${COLOR_RESET} ${NAME}  -  ${INSTALL_DESCRIPTION}";
 }
 
 function checkInstalled() {

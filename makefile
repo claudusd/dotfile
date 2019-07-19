@@ -33,3 +33,6 @@ dot-vim: ## Setup dotfile for vim
 
 dot-rust: ## Setup dotfile for rust
 	@stow -d stow/ -t ~/ rust
+
+dot-openvswitch: ## Setup dotile for openvwitch
+	@stow -d stow/ -t ~/ openvswitch

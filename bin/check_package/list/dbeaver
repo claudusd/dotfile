@@ -1,0 +1,5 @@
+INSTALL_NAME="dbeaver"
+PACKAGE_NAME="dbeaver-ce"
+INSTALL_DESCRIPTION="Query SQL"
+INSTALL_REPOSITORY="deb http://ppa.launchpad.net/serge-rider/dbeaver-ce/ubuntu $(lsb_release -sc) main"
+INSTALL_DOC="https://dbeaver.io/download/"

@@ -14,8 +14,8 @@ dot-git: ## Setup dotfile for git
 dot-prompt: ## Setup dotfile for prompt
 	@stow -d stow/ -t ~/ prompt
 
-dot-vagrant: ## Setup dotfile for vagrant
-	@stow -d stow/ -t ~/ vagrant
+dot-hashicorp: ## Setup dotfile for hashicorp
+	@stow -d stow/ -t ~/ hashicorp
 
 check-package: ## Check package installed
 	@bin/check_package/main.bash

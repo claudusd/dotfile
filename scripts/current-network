@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+NIC=()
+
+for i in $( ls /sys/class/net ); do 
+    if (ls -al /sys/class/net/$i | grep pci > /dev/null ); then
+        NIC+=($i)
+    fi 
+done
+
+ROUTER_HOME_IP="fe80::ba26:6cff:fec2:6b1a"
+
+for nic in "${NIC[@]}"; do
+    if (ping6 -I $nic -c 1 $ROUTER_HOME_IP &> /dev/null); then
+        echo "home"
+        exit 0
+    fi
+done
+
+exit 1

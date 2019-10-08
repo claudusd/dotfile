@@ -1,4 +1,4 @@
 INSTALL_NAME="git"
 INSTALL_DESCRIPTION="The only VCS"
 PACKAGE_NAME="git-core"
-INSTALL_REPOSITORY="deb http://ppa.launchpad.net/git-core/ppa/ubuntu $(lsb_release -sc) main"
+INSTALL_PPA="ppa:git-core/ppa"

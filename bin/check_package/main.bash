@@ -3,6 +3,8 @@
 CHAR_OK=' ✓'
 CHAR_KO=' ✗'
 
+CHAR_BOOK=' 📖'
+
 COLOR_RESET='\033[0m'
 COLOR_RED='\033[31m'
 COLOR_GREEN='\033[32m';
@@ -31,17 +33,28 @@ function installation() {
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
   elif [ -n "$PACKAGE_NAME" ]; then
-    if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
-      echo "wget -q -O- $INSTALL_REPOSITORY_KEY | sudo apt-key add -"
-    fi;
-    if [ -n "$INSTALL_REPOSITORY" ]; then
-      echo "echo '$INSTALL_REPOSITORY' > /etc/apt/sources.list.d/$INSTALL_NAME.list"
-    fi;
+
+    if [ -n "$INSTALL_PACKAGE_REQUIRE" ]; then
+        echo "apt install $INSTALL_PACKAGE_REQUIRE"
+    fi
+
+    if [ -n "$INSTALL_PPA" ]; then
+        echo "add-apt-repository $INSTALL_PPA"
+        echo "apt update"
+    else
+        if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
+            echo "wget -q -O- $INSTALL_REPOSITORY_KEY | sudo apt-key add -"
+        fi;
+        if [ -n "$INSTALL_REPOSITORY" ]; then
+            echo "echo '$INSTALL_REPOSITORY' > /etc/apt/sources.list.d/$INSTALL_NAME.list"
+        fi;
+    fi
+
     echo "apt install $PACKAGE_NAME $PACKAGE_NAME_EXTRA"
   fi
 
   if [ -n "$INSTALL_DOC" ]; then
-    echo "Documentation : $INSTALL_DOC"
+    echo "$CHAR_BOOK $INSTALL_DOC"
   fi;
 }
 
@@ -73,6 +86,8 @@ clean_vars() {
   unset INSTALL_REPOSITORY;
   unset INSTALL_COMMAND;
   unset PACKAGE_NAME_EXTRA;
+  unset INSTALL_PPA;
+  unset INSTALL_PACKAGE_REQUIRE;
 }
 
 DIRECTORY=`dirname $0`

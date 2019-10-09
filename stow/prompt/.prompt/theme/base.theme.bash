@@ -38,6 +38,8 @@ RVM_THEME_PROMPT_SUFFIX='|'
 VIRTUALENV_THEME_PROMPT_PREFIX=' |'
 VIRTUALENV_THEME_PROMPT_SUFFIX='|'
 
+VENV_THEME_CHAR='🐍'
+
 RBENV_THEME_PROMPT_PREFIX=' |'
 RBENV_THEME_PROMPT_SUFFIX='|'
 
@@ -246,7 +248,7 @@ function ruby_version_prompt {
 function virtualenv_prompt {
   if [[ -n "$VIRTUAL_ENV" ]]; then
     virtualenv=`basename "$VIRTUAL_ENV"`
-    echo -e "$VIRTUALENV_THEME_PROMPT_PREFIX$virtualenv$VIRTUALENV_THEME_PROMPT_SUFFIX"
+    echo -e "$VIRTUALENV_THEME_PROMPT_PREFIX$VENV_THEME_CHAR$virtualenv$VIRTUALENV_THEME_PROMPT_SUFFIX"
   fi
 }
 

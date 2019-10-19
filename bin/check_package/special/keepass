@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+DIRECTORY=`dirname $0`
+
+source $DIRECTORY/../utils.bash
+
+checkInstalled keepass2
+
+KEPPASS2_INSTALLED=$?
+
+checkInstalled mount.davfs
+
+DAVFS2_INSTALLED=$?
+
+MOUNT_DIR=$HOME/.keepass
+
+DAVFS2_CONF_DIR=$HOME/.davfs2
+
+DAVFS2_SECRET=$DAVFS2_CONF_DIR/secrets
+
+if [ $KEPPASS2_INSTALLED = 0 ] && [ $DAVFS2_INSTALLED = 0 ] && [ -d $MOUNT_DIR ]; then
+    installed password "Password manager"
+else
+    uninstalled password "Password manager"
+fi
+
+echo -e "$(writeUnderline 'Required package:') keepass, davfs"
+
+echo "mkdir ${MOUNT_DIR}"
+echo "adduser $USER davfs2"
+echo "mkdir -p ${DAVFS2_CONF_DIR}"
+echo " echo '${MOUNT_DIR} $(writeStrike WEBDAV_LOGIN) $(writeStrike WEBDAV_LOGIN)' >> $DAVFS2_SECRET"
+echo "chown $USER:$USER $DAVFS2_SECRET"
+echo "chmod 600 $DAVFS2_SECRET"
+echo "sudo sh -c '$(writeStrike https://WEB_DAV_URL)/keepass $MOUNT_DIR davfs rw,user,noauto 0 0' >> /etc/fstab"

@@ -1,30 +1,12 @@
 #!/usr/bin/env bash
 
-CHAR_OK=' ✓'
-CHAR_KO=' ✗'
+DIRECTORY=`dirname $0`
 
-CHAR_BOOK=' 📖'
-
-COLOR_RESET='\033[0m'
-COLOR_RED='\033[31m'
-COLOR_GREEN='\033[32m';
+source $DIRECTORY/utils.bash
 
 if [ -f /etc/lsb-release ]; then
   source /etc/lsb-release
 fi
-
-function installed() {
-  echo -e "${COLOR_GREEN}${CHAR_OK}${COLOR_RESET} ${NAME}  -  $INSTALL_DESCRIPTION";
-}
-
-function uninstalled() {
-  echo -e "${COLOR_RED}${CHAR_KO}${COLOR_RESET} ${NAME}  -  ${INSTALL_DESCRIPTION}";
-}
-
-function checkInstalled() {
-  WHICH_COMMAND="which $INSTALL_NAME"
-  $WHICH_COMMAND > /dev/null 2>&1
-}
 
 
 function installation() {
@@ -46,7 +28,8 @@ function installation() {
             echo "wget -q -O- $INSTALL_REPOSITORY_KEY | sudo apt-key add -"
         fi;
         if [ -n "$INSTALL_REPOSITORY" ]; then
-            echo "echo '$INSTALL_REPOSITORY' > /etc/apt/sources.list.d/$INSTALL_NAME.list"
+            echo "sudo sh -c 'echo \"$INSTALL_REPOSITORY\" > /etc/apt/sources.list.d/$INSTALL_NAME.list'"
+	    echo "apt update"
         fi;
     fi
 
@@ -66,12 +49,12 @@ function check() {
       PACKAGE_NAME="$INSTALL_NAME";
   fi;
 
-  checkInstalled
+  checkInstalled $INSTALL_NAME
 
   if [ $? = 0 ]; then
-    installed
+    installed $NAME "$INSTALL_DESCRIPTION"
   else
-    uninstalled
+    uninstalled $NAME "$INSTALL_DESCRIPTION"
   fi;
   installation
   echo
@@ -90,7 +73,7 @@ clean_vars() {
   unset INSTALL_PACKAGE_REQUIRE;
 }
 
-DIRECTORY=`dirname $0`
+writeBold "Package install"
 
 for file in $DIRECTORY/list/*
 do
@@ -99,5 +82,14 @@ do
         source $file;
         check
         clean_vars;
+    fi
+done
+
+writeBold "Special install"
+
+for file in $DIRECTORY/special/*
+do
+    if [ -f $file ]; then
+        $file
     fi
 done

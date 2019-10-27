@@ -1,0 +1,2 @@
+INSTALL_NAME="wakeonlan"
+INSTALL_DESCRIPTION="Wake up over network"

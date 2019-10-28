@@ -1,4 +1,4 @@
-Host nas
+Host qnap
   Hostname 192.168.1.11
   Port 22
   User admin

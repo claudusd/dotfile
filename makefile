@@ -32,3 +32,6 @@ dot-rust: ## Setup dotfile for rust
 
 dot-openvswitch: ## Setup dotile for openvwitch
 	@stow -d stow/ -t ~/ openvswitch
+
+dot-rvm: ## Setup dotile for rvm
+	@stow -d stow/ -t ~ rvm

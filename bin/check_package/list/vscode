@@ -1,7 +1,7 @@
 INSTALL_NAME="code"
 INSTALL_DESCRIPTION="Write code"
 INSTALL_DOC="https://code.visualstudio.com/docs/setup/linux"
-INSTALL_REPOSITORY="deb [arch=amd64] https://packages.microsoft.com/repos/vscode"
+INSTALL_REPOSITORY_URL="https://packages.microsoft.com/repos/vscode"
 INSTALL_REPOSITORY_DISTRO="stable"
 INSTALL_REPOSITORY_COMPONENT="main"
 INSTALL_REPOSITORY_KEY="https://packages.microsoft.com/keys/microsoft.asc"

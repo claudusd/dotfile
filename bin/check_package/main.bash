@@ -31,6 +31,7 @@ function installation() {
             if [ -z "$INSTALL_REPOSITORY_DISTRO" ]; then
                 INSTALL_REPOSITORY_DISTRO=$(lsb_release -sc)
             fi
+	    checkSourceListUpdate
             echo "sudo sh -c 'echo \"deb $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" > /etc/apt/sources.list.d/$INSTALL_NAME.list'"
 	    echo "apt update"
         fi;
@@ -42,6 +43,18 @@ function installation() {
   if [ -n "$INSTALL_DOC" ]; then
     echo "$CHAR_BOOK $INSTALL_DOC"
   fi;
+}
+
+function checkSourceListUpdate() {
+    if [ -n "$INSTALL_REPOSITORY_URL" ]; then
+	if [[ "$INSTALL_REPOSITORY_DISTRO" != $(lsb_release -sc) ]] && [[ "$INSTALL_REPOSITORY_DISTRO" != "stable" ]]; then
+	    RESULT=$(curl -s -o /dev/null -w "%{http_code}" "$INSTALL_REPOSITORY_URL/dists/$(lsb_release -sc)")
+	    echo $RESULT
+	    if [ $RESULT -ne 404 ]; then
+		    echo -e "$(writeOrange $CHAR_WARNING) You can replace $(writeStrike $INSTALL_REPOSITORY_DISTRO) by $(lsb_release -sc)"
+            fi
+        fi
+    fi
 }
 
 ###

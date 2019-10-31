@@ -28,7 +28,10 @@ function installation() {
             echo "wget -q -O- $INSTALL_REPOSITORY_KEY | sudo apt-key add -"
         fi;
         if [ -n "$INSTALL_REPOSITORY" ]; then
-            echo "sudo sh -c 'echo \"$INSTALL_REPOSITORY\" > /etc/apt/sources.list.d/$INSTALL_NAME.list'"
+            if [ -z "$INSTALL_REPOSITORY_DISTRO" ]; then
+                INSTALL_REPOSITORY_DISTRO=$(lsb_release -sc)
+            fi
+            echo "sudo sh -c 'echo \"$INSTALL_REPOSITORY $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" > /etc/apt/sources.list.d/$INSTALL_NAME.list'"
 	    echo "apt update"
         fi;
     fi
@@ -71,6 +74,8 @@ clean_vars() {
   unset PACKAGE_NAME_EXTRA;
   unset INSTALL_PPA;
   unset INSTALL_PACKAGE_REQUIRE;
+  unset INSTALL_REPOSITORY_DISTRO;
+  unset INSTALL_REPOSITORY_COMPONENT;
 }
 
 writeBold "Package install"

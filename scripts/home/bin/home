@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+DIRECTORY="`dirname "$0"`/../command"
+
+if [ -z "$1" ]; then
+	exit 1
+fi
+
+if [ -f "$DIRECTORY/$1.sh" ]; then
+	$DIRECTORY/$1.sh ${@:2}
+else
+	echo "Cannot found command $1"
+fi

@@ -2,12 +2,13 @@
 
 CHAR_OK=' ✓'
 CHAR_KO=' ✗'
-
+CHAR_WARNING=' ⚠'
 CHAR_BOOK=' 📖'
 
 COLOR_RESET='\033[0m'
 COLOR_RED='\033[31m'
 COLOR_GREEN='\033[32m';
+COLOR_ORANGE='\033[33m'
 
 BOLD='\'
 
@@ -22,6 +23,10 @@ writeGreen() {
 
 writeRed() {
     echo "${COLOR_RED}${1}${COLOR_RESET}"
+}
+
+writeOrange() {
+    echo "${COLOR_ORANGE}${1}${COLOR_RESET}"
 }
 
 installed() {

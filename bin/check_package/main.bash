@@ -10,6 +10,9 @@ fi
 
 
 function installation() {
+  if [ -n "$GPG_PUBLIC_KEYS" ]; then
+    echo "gpg2 --recv-keys $GPG_PUBLIC_KEYS"
+  fi
   if [ -n "$INSTALL_URL" ]; then
     echo "Installation page : $INSTALL_URL";
   elif [ -n "$INSTALL_COMMAND" ]; then
@@ -89,6 +92,7 @@ clean_vars() {
   unset INSTALL_PACKAGE_REQUIRE;
   unset INSTALL_REPOSITORY_DISTRO;
   unset INSTALL_REPOSITORY_COMPONENT;
+  unset GPG_PUBLIC_KEYS;
 }
 
 writeBold "Package install"

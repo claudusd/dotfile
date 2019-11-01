@@ -35,3 +35,6 @@ dot-openvswitch: ## Setup dotile for openvwitch
 
 dot-rvm: ## Setup dotile for rvm
 	@stow -d stow/ -t ~ rvm
+
+dot-nvm: ## Setup dotile for nvm
+	@stow -d stow/ -t ~ nvm

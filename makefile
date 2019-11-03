@@ -38,3 +38,6 @@ dot-rvm: ## Setup dotile for rvm
 
 dot-nvm: ## Setup dotile for nvm
 	@stow -d stow/ -t ~ nvm
+
+dot-home: ## Setup dotfile for home
+	@stow -d stow/ -t ~ home

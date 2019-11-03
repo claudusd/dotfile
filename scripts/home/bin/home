@@ -3,11 +3,18 @@
 DIRECTORY="`dirname "$0"`/../command"
 
 if [ -z "$1" ]; then
-	exit 1
+	for file in $DIRECTORY/*
+	do
+    		if [ -f $file ]; then
+			echo "- $(basename $file)"
+		fi
+	done
+	exit 0
+
 fi
 
-if [ -f "$DIRECTORY/$1.sh" ]; then
-	$DIRECTORY/$1.sh ${@:2}
+if [ -f "$DIRECTORY/$1" ]; then
+	$DIRECTORY/$1 ${@:2}
 else
 	echo "Cannot found command $1"
 fi

@@ -7,3 +7,4 @@ yarn-error.log
 .vscode
 .terraform
 node_modules
+*.swp

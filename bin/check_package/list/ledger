@@ -1,0 +1,3 @@
+INSTALL_NAME="ledger"
+INSTALL_DESCRIPTION="Manage money"
+INSTALL_DOC="https://www.ledger-cli.org/"

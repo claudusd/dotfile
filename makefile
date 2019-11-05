@@ -41,3 +41,6 @@ dot-nvm: ## Setup dotile for nvm
 
 dot-home: ## Setup dotfile for home
 	@stow -d stow/ -t ~ home
+
+dot-ledger: ## Setup dotfile for ledger
+	@stow -d stow -t ~ ledger

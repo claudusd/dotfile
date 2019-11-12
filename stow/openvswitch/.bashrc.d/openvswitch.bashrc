@@ -1,6 +1,4 @@
-VAGRANT_VERSION=$(ovs-vsctl --version)
-
-if [ $? = 0 ]; then
+if which ovs-vsctl &> /dev/null; then
   
   OPENVSWITCH_BASH_PATH="/usr/share/bash-completion/completions/ovs-vsctl-bashcomp.bash"
   

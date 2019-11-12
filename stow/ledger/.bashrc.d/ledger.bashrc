@@ -1,7 +1,4 @@
-LEDGER_VERSION=$(ledger --version)
-
-if [ $? = 0 ]; then
-
+if which ledger &> /dev/null; then
 # COPIED FROM https://gist.github.com/iphoting/5006503
 
 _ledger() 

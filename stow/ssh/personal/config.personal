@@ -7,3 +7,8 @@ Host tv
   Hostname 192.168.1.12
   Port 22
   User osmc
+
+Host nas
+  Hostname 192.168.1.17
+  Port 22
+  User root

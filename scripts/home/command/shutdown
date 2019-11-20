@@ -1,0 +1,15 @@
+#/usr/bin/env bash
+
+if [ "$1" = "-c" ]; then
+  echo "nas tv"
+  exit 0
+fi
+
+
+case "$1" in
+	nas)
+		ssh nas 'shutdown now'
+		;;
+	*)
+		echo "Unknow shutdown for $1"
+esac

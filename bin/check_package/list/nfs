@@ -1,0 +1,3 @@
+INSTALL_NAME="mount.nfs"
+PACKAGE_NAME="nfs-common"
+INSTALL_DESCRIPTION="Mount NFS"

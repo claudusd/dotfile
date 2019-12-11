@@ -1,0 +1,3 @@
+GITHUB_REPO="docker/compose"
+INSTALL_DESCRIPTION="Drive a whale bench"
+GITHUB_RELEASE_NAME="$NAME-$(uname -s)-$(uname -m)"

@@ -48,3 +48,26 @@ writeStrike() {
 writeUnderline() {
     echo -e "\033[4m$1\033[0m"
 }
+
+githubLatestRelease() {
+  RESULT=$(curl -f https://api.github.com/repos/$1/releases/latest 2> /dev/null)
+
+  if [ $? -ne 0 ]; then
+    echo ""
+    return
+  fi
+  echo $RESULT | jq -r '.name'
+}
+
+checkNewVersion() {
+  checkInstalled $1
+  if [ $? = 0 ]; then
+    $1 --version | grep "$2" > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      return 0
+    fi
+    return 1
+  else
+    return 0
+  fi;
+}

@@ -10,8 +10,6 @@ fi
 
 
 function installation() {
-
-
   if [ -f "$DIRECTORY/list/$NAME.post_install" ] || [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then 
     echo -e "$(writeUnderline 'Install:')"
   fi
@@ -19,10 +17,13 @@ function installation() {
   if [ -n "$GPG_PUBLIC_KEYS" ]; then
     echo "gpg2 --recv-keys $GPG_PUBLIC_KEYS"
   fi
+
   if [ -n "$INSTALL_URL" ]; then
     echo "Installation page : $INSTALL_URL";
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
+  elif [ -n "$GITHUB_REPO" ]; then
+    installationFromGithubRelease
   elif [ -n "$PACKAGE_NAME" ]; then
 
     if [ -n "$INSTALL_PACKAGE_REQUIRE" ]; then
@@ -64,6 +65,19 @@ function installation() {
   fi;
 }
 
+function installationFromGithubRelease() {
+  VERSION=$(githubLatestRelease $GITHUB_REPO)
+  checkNewVersion $INSTALL_NAME $VERSION
+  if [ $? -eq 1 ]; then
+    echo -e "$(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $INSTALL_NAME) to $(writeUnderline $VERSION)"
+  fi
+  BIN_PATH="/usr/local/bin/$NAME"
+  echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
+  echo "chmod +x $BIN_PATH"
+  unset BIN_PATH
+  unset VERSION
+}
+
 function checkSourceListUpdate() {
   if [ -n "$INSTALL_REPOSITORY_URL" ]; then
     if [[ "$INSTALL_REPOSITORY_DISTRO" != $(lsb_release -sc) ]] && [[ "$INSTALL_REPOSITORY_DISTRO" != "stable" ]]; then
@@ -79,6 +93,10 @@ function checkSourceListUpdate() {
 # @param bin
 ###
 function check() {
+  if [ -z "$INSTALL_NAME" ]; then
+    INSTALL_NAME="$NAME"
+  fi
+
   if [ -z "$PACKAGE_NAME" ]; then
       PACKAGE_NAME="$INSTALL_NAME";
   fi;
@@ -109,6 +127,8 @@ clean_vars() {
   unset INSTALL_REPOSITORY_COMPONENT;
   unset GPG_PUBLIC_KEYS;
   unset INSTALL_REPOSITORY_ARCH;
+  unset GITHUB_REPO;
+  unset GITHUB_RELEASE_NAME;
 }
 
 writeBold "Package install"

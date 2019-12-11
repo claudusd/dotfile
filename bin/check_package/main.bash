@@ -10,6 +10,12 @@ fi
 
 
 function installation() {
+
+
+  if [ -f "$DIRECTORY/list/$NAME.post_install" ] || [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then 
+    echo -e "$(writeUnderline 'Install:')"
+  fi
+
   if [ -n "$GPG_PUBLIC_KEYS" ]; then
     echo "gpg2 --recv-keys $GPG_PUBLIC_KEYS"
   fi
@@ -46,6 +52,11 @@ function installation() {
     fi
 
     echo "apt install $PACKAGE_NAME $PACKAGE_NAME_EXTRA"
+  fi
+
+  if [ -f "$DIRECTORY/list/$NAME.post_install" ]; then
+    echo -e "$(writeUnderline 'Post install:')"
+    $DIRECTORY/list/$NAME.post_install
   fi
 
   if [ -n "$INSTALL_DOC" ]; then

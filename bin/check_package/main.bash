@@ -35,7 +35,12 @@ function installation() {
                 INSTALL_REPOSITORY_DISTRO=$(lsb_release -sc)
             fi
 	    checkSourceListUpdate
-            echo "sudo sh -c 'echo \"deb $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" > /etc/apt/sources.list.d/$INSTALL_NAME.list'"
+        REPOSITORY_ARCH=""
+        if [ -n "$INSTALL_REPOSITORY_ARCH" ]; then
+            REPOSITORY_ARCH="[arch=$INSTALL_REPOSITORY_ARCH]"
+        fi
+            echo "sudo sh -c 'echo \"deb $REPOSITORY_ARCH $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" > /etc/apt/sources.list.d/$INSTALL_NAME.list'"
+        unset REPOSITORY_ARCH
 	    echo "apt update"
         fi;
     fi
@@ -92,6 +97,7 @@ clean_vars() {
   unset INSTALL_REPOSITORY_DISTRO;
   unset INSTALL_REPOSITORY_COMPONENT;
   unset GPG_PUBLIC_KEYS;
+  unset INSTALL_REPOSITORY_ARCH;
 }
 
 writeBold "Package install"

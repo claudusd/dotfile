@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+echo "usermod -a -G docker $USER"
+echo "su - $USER"

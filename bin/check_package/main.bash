@@ -102,12 +102,14 @@ clean_vars() {
 
 writeBold "Package install"
 
-for file in $DIRECTORY/list/*
+for file in $DIRECTORY/list/*.install
 do
     if [ -f $file ]; then
         NAME=$(basename $file);
+        NAME=${NAME%.install}
         source $file;
         check
+        unset NAME;
         clean_vars;
     fi
 done

@@ -1,6 +1,5 @@
 if which terraform &> /dev/null; then
 
-echo "aaaa"
   # COPIED FROM https://gist.github.com/zish/85dccece461e050077997ff5d7d9c9d4
 
   #  Bash Terraform completion

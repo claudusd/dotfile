@@ -131,6 +131,14 @@ clean_vars() {
   unset GITHUB_RELEASE_NAME;
 }
 
+if ! which jq > /dev/null; then
+	writeBold "Required package" 
+	NAME="jq"
+	INSTALL_DESCRIPTION="How read json in bash"
+	check
+	exit 
+fi
+
 writeBold "Package install"
 
 for file in $DIRECTORY/list/*.install

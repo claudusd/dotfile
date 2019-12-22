@@ -84,6 +84,7 @@ function checkSourceListUpdate() {
       RESULT=$(curl -s -o /dev/null -w "%{http_code}" "$INSTALL_REPOSITORY_URL/dists/$(lsb_release -sc)")
       if [ $RESULT -ne 404 ]; then
         echo -e "$(writeOrange $CHAR_WARNING) You can replace $(writeStrike $INSTALL_REPOSITORY_DISTRO) by $(lsb_release -sc)"
+        INSTALL_REPOSITORY_DISTRO=$(lsb_release -sc)
       fi
     fi
   fi

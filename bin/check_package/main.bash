@@ -129,6 +129,7 @@ clean_vars() {
   unset INSTALL_REPOSITORY_ARCH;
   unset GITHUB_REPO;
   unset GITHUB_RELEASE_NAME;
+  unset INSTALL_REPOSITORY_KEY;
 }
 
 if ! which jq > /dev/null; then

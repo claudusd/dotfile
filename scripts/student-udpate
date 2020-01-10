@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+repos=(
+    "Maquecime/LpJsProject"
+    "MaelManifacier/JavaScriptLP"
+    "esbarland/js-project-lp"
+    "adriengauvry/GAUVRY_CHAPON_JS"
+    "thfague/BASSINET_FAGUE_ProjetJS"
+    "Dreymst/NuryDeatJavaScript"
+    "eissam-web/projet_javascript_partieLivre"
+    "JefVerschuere/Javascript_project"
+    "antoinechab/beers"
+    "Valdorah/js-project-episodes"
+    "jonathanpoint/js_trees_part_site"
+    "shankka63/coins"
+    "thekenny03500/edu-licpro-pratical"
+
+)
+count=1
+
+tmpdir=$(mktemp -d)
+
+echo $tmpdir
+
+mkdir -p "$tmpdir/student"
+
+git clone git@github.com:claudusd/edu-licpro-pratical.git "$tmpdir/base"
+
+for i in "${repos[@]}"; do
+    echo "$i"
+    git clone "git@github.com:$i.git" "$tmpdir/student/$count"
+    cd $tmpdir/student/$count
+    git checkout -b "teacher/update1"
+
+    rm -rf .dont_touch/
+
+    cp -r $tmpdir/base/.dont_touch .dont_touch
+
+    cp  $tmpdir/base/README.md  README.md 
+
+    cp  $tmpdir/base/docker-compose.yml docker-compose.yml
+
+    rm -rf  packages/http-client
+
+    cp -r  $tmpdir/base/packages/http-client  packages/http-client
+
+    git add .
+
+    git commit -m "Update for pratical2"
+
+    #git push origin "teacher/update1"
+
+    count=$(($count+1))
+done
+
+clear
+
+for i in "${repos[@]}"; do
+    echo "https://github.com/$i"
+done

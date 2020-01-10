@@ -24,13 +24,15 @@ echo $tmpdir
 
 mkdir -p "$tmpdir/student"
 
+branch_name="teacher_update1"
+
 git clone git@github.com:claudusd/edu-licpro-pratical.git "$tmpdir/base"
 
 for i in "${repos[@]}"; do
     echo "$i"
     git clone "git@github.com:$i.git" "$tmpdir/student/$count"
     cd $tmpdir/student/$count
-    git checkout -b "teacher/update1"
+    git checkout -b "$branch_name"
 
     rm -rf .dont_touch/
 
@@ -48,7 +50,7 @@ for i in "${repos[@]}"; do
 
     git commit -m "Update for pratical2"
 
-    #git push origin "teacher/update1"
+    #git push origin "$branch_name"
 
     count=$(($count+1))
 done
@@ -56,5 +58,5 @@ done
 clear
 
 for i in "${repos[@]}"; do
-    echo "https://github.com/$i"
+    echo "https://github.com/$i/pull/new/$branch_name"
 done

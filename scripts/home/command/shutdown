@@ -5,6 +5,10 @@ if [ "$1" = "-c" ]; then
   exit 0
 fi
 
+if [ -z "$1" ]; then
+	echo "Missing server to shutdown"
+	exit 0
+fi
 
 case "$1" in
 	nas)

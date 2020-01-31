@@ -4,6 +4,7 @@ CHAR_OK=' ✓'
 CHAR_KO=' ✗'
 CHAR_WARNING=' ⚠'
 CHAR_BOOK=' 📖'
+CHAR_STUDENT=' '
 
 COLOR_RESET='\033[0m'
 COLOR_RED='\033[31m'

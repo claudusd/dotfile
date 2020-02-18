@@ -2,7 +2,7 @@
 
 DIRECTORY=`dirname $0`
 
-source $DIRECTORY/utils.bash
+source $DIRECTORY/../../lib/utils.bash
 
 GITHUB_AUTH="claudusd:$TOKEN_GITHUB_COM"
 

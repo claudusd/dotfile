@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
+DIRECTORY=`dirname $0`
+
+source $DIRECTORY/../lib/utils.bash
 
 function toOld() {
+    if [ ! -f $1 ]; then
+        return 0
+    fi
+
     if test `find "$1" -mmin +1`
     then
         rm $1
@@ -11,19 +18,34 @@ function toOld() {
 }
 
 function listIssueGithub() {
-  echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
+    FILE_TMP="/tmp/github.issue"
+    toOld $FILE_TMP
+    if [ $? -eq 0 ]; then
+        curl -u claudusd:${TOKEN_GITHUB_COM} https://api.github.com/orgs/clermontech/issues > $FILE_TMP 2> /dev/null
+    fi;
+
+    for row in $(cat $FILE_TMP | jq -r '.[] | @base64'); do
+        ISSUE=$(echo ${row} |  base64 -di)
+        echo $(echo $ISSUE | jq -r .title ) "("$(echo $ISSUE | jq -r .id )")"
+    done
 }
 
 function listIssueGitlab() {
     FILE_TMP="/tmp/gitlab.issue"
     toOld $FILE_TMP
     if [ $? -eq 0 ]; then
-        echo "Use new"
         curl --header "PRIVATE-TOKEN: $TOKEN_GITLAB_COM" https://gitlab.com/api/v4/groups/6927305/issues?assignee_username=claudusd1 > $FILE_TMP 2> /dev/null
     fi;
 
+    for row in $(cat $FILE_TMP | jq -r '.[] | @base64'); do
+        ISSUE=$(echo ${row} |  base64 -di)
+        echo $(echo $ISSUE | jq -r .title ) "("$(echo $ISSUE | jq -r .id )")"
+    done
 
-    
 }
 
+echo "VOLCAMP"
 listIssueGitlab
+
+echo "Clermontech"
+listIssueGithub

@@ -31,21 +31,25 @@ function listIssueGithub() {
 }
 
 function listIssueGitlab() {
-    FILE_TMP="/tmp/gitlab.issue"
+    FILE_TMP=$2
     toOld $FILE_TMP
     if [ $? -eq 0 ]; then
-        curl --header "PRIVATE-TOKEN: $TOKEN_GITLAB_COM" https://gitlab.com/api/v4/groups/6927305/issues?assignee_username=claudusd1 > $FILE_TMP 2> /dev/null
+        curl --header "PRIVATE-TOKEN: $1" $3/api/v4/groups/$4/issues?assignee_username=$5 > $FILE_TMP 2> /dev/null
     fi;
 
     for row in $(cat $FILE_TMP | jq -r '.[] | @base64'); do
         ISSUE=$(echo ${row} |  base64 -di)
         echo $(echo $ISSUE | jq -r .title ) "("$(echo $ISSUE | jq -r .id )")"
     done
-
 }
 
+
+
 echo "VOLCAMP"
-listIssueGitlab
+listIssueGitlab $TOKEN_GITLAB_COM "/tmp/gitlab.com.issue" "https://gitlab.com" "6927305" "claudusd1"
+
+echo "CRI"
+listIssueGitlab $TOKEN_GITLAB_ISIMA_FR "/tmp/gitlab.isima.fr.issue" "https://gitlab.isima.fr" "13" "cladioud1"
 
 echo "Clermontech"
 listIssueGithub

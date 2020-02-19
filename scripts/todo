@@ -27,6 +27,8 @@ function listIssueGithub() {
     for row in $(cat $FILE_TMP | jq -r '.[] | @base64'); do
         ISSUE=$(echo ${row} |  base64 -di)
         echo $(echo $ISSUE | jq -r .title ) "("$(echo $ISSUE | jq -r .id )")"
+        echo "$(echo $ISSUE | jq -r .html_url )"
+        echo
     done
 }
 
@@ -40,16 +42,17 @@ function listIssueGitlab() {
     for row in $(cat $FILE_TMP | jq -r '.[] | @base64'); do
         ISSUE=$(echo ${row} |  base64 -di)
         echo $(echo $ISSUE | jq -r .title ) "("$(echo $ISSUE | jq -r .id )")"
+        echo "$(echo $ISSUE | jq -r .web_url )"
+        echo 
     done
 }
 
 
-
-echo "VOLCAMP"
+echo -e "$(writeBold 'Volcamp')"
 listIssueGitlab $TOKEN_GITLAB_COM "/tmp/gitlab.com.issue" "https://gitlab.com" "6927305" "claudusd1"
 
-echo "CRI"
+echo -e "$(writeBold 'CRI')"
 listIssueGitlab $TOKEN_GITLAB_ISIMA_FR "/tmp/gitlab.isima.fr.issue" "https://gitlab.isima.fr" "13" "cladioud1"
 
-echo "Clermontech"
+echo -e "$(writeBold 'Clermontech')"
 listIssueGithub

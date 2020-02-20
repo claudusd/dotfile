@@ -1,3 +1,4 @@
 INSTALL_NAME="packer"
 INSTALL_DESCRIPTION="Build image VM"
 INSTALL_URL="https://www.packer.io/downloads.html"
+GITHUB_REPO="hashicorp/packer"

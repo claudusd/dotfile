@@ -51,19 +51,34 @@ writeUnderline() {
 }
 
 githubLatestRelease() {
-  RESULT=$(curl -f https://api.github.com/repos/$1/releases/latest 2> /dev/null)
-
+  RESULT=$(curl -f -u "$GITHUB_AUTH" https://api.github.com/repos/$1/releases/latest 2> /dev/null)
   if [ $? -ne 0 ]; then
-    echo ""
+    RESULT=$(curl -f -u "$GITHUB_AUTH" https://api.github.com/repos/$1/tags 2> /dev/null)
+    if [ $? -ne 0 ]; then 
+      echo ""
+      return
+    fi;
+    VERSION=$(echo $RESULT | jq -r .[0].name)
+    echo $(extractVersion $VERSION)
     return
   fi
-  echo $RESULT | jq -r '.name'
+  VERSION=$(echo $RESULT | jq -r '.tag_name')
+  echo $(extractVersion $VERSION)
+}
+
+getVersion() {
+  extractVersion "$($1 --version)"
+}
+
+extractVersion() {
+  echo $1 | sed -n -E 's/[0-9A-Za-z -]*(([0-9]+\.?)+).*/\1/p'
 }
 
 checkNewVersion() {
   checkInstalled $1
   if [ $? = 0 ]; then
-    $1 --version | grep "$2" > /dev/null 2>&1
+    version=$(getVersion $1)
+    echo $version | grep "$2" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
       return 0
     fi

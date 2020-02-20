@@ -1,3 +1,4 @@
 INSTALL_NAME="vagrant"
 INSTALL_DESCRIPTION="Manage VM"
 INSTALL_URL="https://www.vagrantup.com/downloads.html"
+GITHUB_REPO="hashicorp/vagrant"

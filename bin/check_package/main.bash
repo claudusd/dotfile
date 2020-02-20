@@ -19,6 +19,11 @@ function installation() {
   fi
 
   if [ -n "$INSTALL_URL" ]; then
+    if [ -n "$GITHUB_REPO" ]; then 
+      VERSION=$(githubLatestRelease $GITHUB_REPO)
+      checkVersionFromGithub $VERSION
+      unset VERSION
+    fi
     echo "Installation page : $INSTALL_URL";
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
@@ -65,12 +70,18 @@ function installation() {
   fi;
 }
 
+function checkVersionFromGithub() {
+  checkNewVersion $INSTALL_NAME $1
+  if [ $? -eq 1 ]; then
+    CURRENT_VERSION=$(getVersion $INSTALL_NAME)
+    echo -e "$(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $INSTALL_NAME) from $CURRENT_VERSION to $(writeUnderline $VERSION)"
+    unset CURRENT_VERSION
+  fi
+}
+
 function installationFromGithubRelease() {
   VERSION=$(githubLatestRelease $GITHUB_REPO)
-  checkNewVersion $INSTALL_NAME $VERSION
-  if [ $? -eq 1 ]; then
-    echo -e "$(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $INSTALL_NAME) to $(writeUnderline $VERSION)"
-  fi
+  checkVersionFromGithub $VERSION
   BIN_PATH="/usr/local/bin/$NAME"
   echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
   echo "chmod +x $BIN_PATH"

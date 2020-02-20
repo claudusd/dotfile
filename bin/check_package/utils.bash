@@ -51,18 +51,22 @@ writeUnderline() {
 
 githubLatestRelease() {
   RESULT=$(curl -f https://api.github.com/repos/$1/releases/latest 2> /dev/null)
-
   if [ $? -ne 0 ]; then
     echo ""
     return
   fi
-  echo $RESULT | jq -r '.name'
+  echo $RESULT | jq -r '.tag_name'
+}
+
+getVersion() {
+  $1 --version | sed -n -E 's/[0-9A-Za-z -]*(([0-9]+\.?)+).*/\1/p'
 }
 
 checkNewVersion() {
   checkInstalled $1
   if [ $? = 0 ]; then
-    $1 --version | grep "$2" > /dev/null 2>&1
+    version=$(getVersion $1)
+    echo $version | grep "$2" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
       return 0
     fi

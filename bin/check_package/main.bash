@@ -4,6 +4,8 @@ DIRECTORY=`dirname $0`
 
 source $DIRECTORY/utils.bash
 
+GITHUB_AUTH="claudusd:$TOKEN_GITHUB_COM"
+
 if [ -f /etc/lsb-release ]; then
   source /etc/lsb-release
 fi

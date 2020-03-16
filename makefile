@@ -24,6 +24,10 @@ ssh-personal: ## Setup dotfile for personal's ssh
 	@stow -d stow/ssh/ -t ~/.ssh/ global
 	@stow -d stow/ssh/ -t ~/.ssh/ personal
 
+ssh-work: ## Setup dotfile for work's ssh
+	@stow -d stow/ssh/ -t ~/.ssh/ global
+	@stow -d stow/ssh/ -t ~/.ssh/ work
+
 dot-vim: ## Setup dotfile for vim
 	@stow -d stow/ -t ~/ vim
 

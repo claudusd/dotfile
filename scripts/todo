@@ -51,8 +51,8 @@ function listIssueGitlab() {
 echo -e "$(writeBold 'Volcamp')"
 listIssueGitlab $TOKEN_GITLAB_COM "/tmp/gitlab.com.issue" "https://gitlab.com" "6927305" "claudusd1"
 
-echo -e "$(writeBold 'CRI')"
-listIssueGitlab $TOKEN_GITLAB_ISIMA_FR "/tmp/gitlab.isima.fr.issue" "https://gitlab.isima.fr" "13" "cladioud1"
+#echo -e "$(writeBold 'CRI')"
+#listIssueGitlab $TOKEN_GITLAB_ISIMA_FR "/tmp/gitlab.isima.fr.issue" "https://gitlab.isima.fr" "13" "cladioud1"
 
 echo -e "$(writeBold 'Clermontech')"
 listIssueGithub

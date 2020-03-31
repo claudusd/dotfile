@@ -48,3 +48,6 @@ dot-home: ## Setup dotfile for home
 
 dot-ledger: ## Setup dotfile for ledger
 	@stow -d stow -t ~ ledger
+
+dot-haskell: ## Setup dotfile for haskell
+	@stow -d stow/ -t ~ haskell

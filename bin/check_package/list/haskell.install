@@ -1,0 +1,5 @@
+NAME="haskell"
+INSTALL_NAME="ghc"
+INSTALL_DESCRIPTION="Functional programming"
+PACKAGE_NAME="cabal-install-3.2 ghc-8.8.3"
+INSTALL_PPA="ppa:hvr/ghc"

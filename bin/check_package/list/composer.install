@@ -1,0 +1,3 @@
+GITHUB_REPO="composer/composer"
+INSTALL_DESCRIPTION="Best dependency management"
+GITHUB_RELEASE_NAME="composer.phar"

@@ -10,6 +10,19 @@ if [ -f /etc/lsb-release ]; then
   source /etc/lsb-release
 fi
 
+function preInstall() {
+  echo -e "$(writeUnderline 'Pre install:')"
+
+  for package in $PRE_PACKAGE_NAME
+  do
+    checkAptPackageInstalled $package
+     if [ $? = 0 ]; then
+      echo -e " $(writeGreen ${CHAR_OK}) ${package}"
+    else
+      echo -e " $(writeRed ${CHAR_KO}) apt install ${package}";
+    fi;
+  done
+}
 
 function installation() {
   if [ -f "$DIRECTORY/list/$NAME.post_install" ] || [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then 
@@ -100,9 +113,9 @@ function installationFromPip() {
   INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
   echo "python3 -m venv $INSTALL_DIR/.venv"
   echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
-  echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=\`dirname \$0\`\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$PIP_PACKAGE \$@' > $INSTALL_DIR/$NAME"
-  echo "chmod +x $INSTALL_DIR/$NAME"
-  echo "make dot-$PIP_PACKAGE"
+  echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=\`dirname \$0\`\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$PIP_PACKAGE \$@' > $INSTALL_DIR/$INSTALL_NAME"
+  echo "chmod +x $INSTALL_DIR/$INSTALL_NAME"
+  echo "make dot-$NAME"
   unset INSTALL_DIR
   unset VERSION
 }
@@ -138,11 +151,20 @@ function check() {
   else
     uninstalled $NAME "$INSTALL_DESCRIPTION"
   fi;
+
+  if [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then
+    source $DIRECTORY/list/$NAME.pre_install
+    preInstall
+  fi
+
   installation
   echo
 }
 
 clean_vars() {
+  # Pre Install vars
+  unset PRE_PACKAGE_NAME;
+  # Install vars
   unset INSTALL_NAME;
   unset PACKAGE_NAME;
   unset INSTALL_DESCRIPTION;

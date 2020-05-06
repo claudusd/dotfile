@@ -18,6 +18,10 @@ checkInstalled() {
   $WHICH_COMMAND > /dev/null 2>&1
 }
 
+checkAptPackageInstalled() {
+  apt list --installed 2>/dev/null | grep "^$1/" > /dev/null
+}
+
 writeGreen() {
     echo "${COLOR_GREEN}${1}${COLOR_RESET}"
 }
@@ -92,3 +96,4 @@ checkNewVersion() {
     return 0
   fi;
 }
+

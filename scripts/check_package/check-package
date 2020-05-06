@@ -51,6 +51,14 @@ function installation() {
 
   if [ -n "$INSTALL_URL" ]; then
     echo "Installation page : $INSTALL_URL";
+  elif [ -n "$INSTALL_DEB_URL" ]; then
+    if [ -n "$GITHUB_REPO" ]; then 
+      LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
+      INSTALL_DEB_URL=$(echo $INSTALL_DEB_URL | sed "s/--VERSION--/$LATEST_VERSION/g")
+    fi
+    echo "curl -L '$INSTALL_DEB_URL' -o /tmp/$NAME.deb"
+    echo "dpkg -i /tmp/$NAME.deb"
+    echo "rm /tmp/$NAME.deb"
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
   elif [ -n "$GITHUB_REPO" ]; then

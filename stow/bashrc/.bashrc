@@ -112,6 +112,8 @@ if ! shopt -oq posix; then
   fi
 fi
 
+source ~/.dotfile
+
 for file in ~/.bashrc.d/*.bashrc;
 do
   source "$file"

@@ -31,6 +31,8 @@ function installation() {
     echo "$INSTALL_COMMAND"
   elif [ -n "$GITHUB_REPO" ]; then
     installationFromGithubRelease
+  elif [ -n "$PIP_PACKAGE" ]; then
+    installationFromPip
   elif [ -n "$PACKAGE_NAME" ]; then
 
     if [ -n "$INSTALL_PACKAGE_REQUIRE" ]; then
@@ -91,6 +93,20 @@ function installationFromGithubRelease() {
   unset VERSION
 }
 
+function installationFromPip() {
+  VERSION=$(pipLatestRelease $PIP_PACKAGE)
+  INSTALL_DIR=$DOT_FILE_PATH
+  INSTALL_DIR=$(pwd $INSTALL_DIR/../../)
+  INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
+  echo "python3 -m venv $INSTALL_DIR/.venv"
+  echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
+  echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=\`dirname \$0\`\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$PIP_PACKAGE \$@' > $INSTALL_DIR/$NAME"
+  echo "chmod +x $INSTALL_DIR/$NAME"
+  echo "make dot-$PIP_PACKAGE"
+  unset INSTALL_DIR
+  unset VERSION
+}
+
 function checkSourceListUpdate() {
   if [ -n "$INSTALL_REPOSITORY_URL" ]; then
     if [[ "$INSTALL_REPOSITORY_DISTRO" != $(lsb_release -sc) ]] && [[ "$INSTALL_REPOSITORY_DISTRO" != "stable" ]]; then
@@ -144,6 +160,7 @@ clean_vars() {
   unset GITHUB_REPO;
   unset GITHUB_RELEASE_NAME;
   unset INSTALL_REPOSITORY_KEY;
+  unset PIP_PACKAGE;
 }
 
 if ! which jq > /dev/null; then

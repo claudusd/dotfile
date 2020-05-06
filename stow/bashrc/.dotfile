@@ -1,0 +1,4 @@
+LOCAL_DIR=`dirname $(realpath ${BASH_SOURCE[0]})`
+LOCAL_DIR=`realpath $LOCAL_DIR/../../`
+export DOT_FILE_PATH=$LOCAL_DIR
+unset LOCAL_DIR

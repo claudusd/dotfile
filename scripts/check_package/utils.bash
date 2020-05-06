@@ -66,6 +66,11 @@ githubLatestRelease() {
   echo $(extractVersion $VERSION)
 }
 
+pipLatestRelease() {
+  RESULT=$(curl -f https://pypi.org/pypi/$1/json 2> /dev/null)
+  echo $RESULT | jq -r '.info.version'
+}
+
 getVersion() {
   extractVersion "$($1 --version)"
 }

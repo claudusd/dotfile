@@ -18,7 +18,7 @@ dot-hashicorp: ## Setup dotfile for hashicorp
 	@stow -d stow/ -t ~/ hashicorp
 
 check-package: ## Check package installed
-	@bin/check_package/main.bash
+	@scripts/check_package/main.bash
 
 ssh-personal: ## Setup dotfile for personal's ssh
 	@stow -d stow/ssh/ -t ~/.ssh/ global
@@ -51,3 +51,6 @@ dot-ledger: ## Setup dotfile for ledger
 
 dot-haskell: ## Setup dotfile for haskell
 	@stow -d stow/ -t ~ haskell
+
+dot-vdirsyncer: ## Setup dotfile for vdirsyncer
+	@stow -d stow/ -t ~ vdirsyncer

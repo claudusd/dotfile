@@ -151,17 +151,10 @@ function check() {
   else
     uninstalled $NAME "$INSTALL_DESCRIPTION"
   fi;
-
-  if [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then
-    source $DIRECTORY/list/$NAME.pre_install
-    preInstall
-  fi
-
-  installation
-  echo
 }
 
 clean_vars() {
+  unset NAME;
   # Pre Install vars
   unset PRE_PACKAGE_NAME;
   # Install vars
@@ -193,25 +186,33 @@ if ! which jq > /dev/null; then
 	exit 
 fi
 
-writeBold "Package install"
-
-for file in $DIRECTORY/list/*.install
-do
+if [ -z "$1" ]; then 
+  for file in $DIRECTORY/list/*.install
+  do
     if [ -f $file ]; then
         NAME=$(basename $file);
         NAME=${NAME%.install}
         source $file;
         check
-        unset NAME;
         clean_vars;
     fi
-done
-
-writeBold "Special install"
-
-for file in $DIRECTORY/special/*
-do
-    if [ -f $file ]; then
-        $file
+  done
+else
+  if [ -f $DIRECTORY/list/$1.install ]; then
+    NAME=$1
+    source $DIRECTORY/list/$1.install;
+    check
+    if [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then
+      source $DIRECTORY/list/$NAME.pre_install
+      preInstall
     fi
-done
+
+    installation
+    clean_vars;
+  else 
+    echo -e "$(writeRed "Cannot found install for ${1}")";
+    exit 1
+  fi
+  
+fi
+

@@ -36,11 +36,17 @@ writeOrange() {
 }
 
 installed() {
-  echo -e " $(writeGreen ${CHAR_OK}) $(writeBold ${1})  -  $2"
+  echo -e " $(writeGreen ${CHAR_OK}) $(writeBold ${1}) $(trailling $3 ${#1}) -  $2"
+}
+
+trailling() {
+  local _SPACE="                             "
+  local _DIFF="$(($1-$2))"
+  echo "${_SPACE:0:_DIFF}"
 }
 
 uninstalled() {
-  echo -e " $(writeRed ${CHAR_KO}) $(writeBold ${1})  -  $2";
+  echo -e " $(writeRed ${CHAR_KO}) $(writeBold ${1}) $(trailling $3 ${#1}) -  $2";
 }
 
 writeBold() {

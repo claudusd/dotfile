@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+DIRECTORY=`dirname $0`
+source $DIRECTORY/../utils.bash
+
+source "$2"
+NAME=$1
+
+pip_path=$(pipPathDir "$NAME")
+
+echo "$pip_path/${INSTALL_NAME} complete > $DOT_FILE_PATH/stow/${NAME}/.bashrc.d/$NAME-complete.bashrc"

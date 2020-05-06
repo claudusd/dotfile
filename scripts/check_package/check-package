@@ -103,7 +103,7 @@ function installation() {
 
   if [ -f "$DIRECTORY/list/$NAME.post_install" ]; then
     echo -e "$(writeUnderline 'Post install:')"
-    $DIRECTORY/list/$NAME.post_install
+    $DIRECTORY/list/$NAME.post_install "$NAME" "$DIRECTORY/list/$NAME.install"
   fi
 
   if [ -n "$INSTALL_DOC" ]; then

@@ -109,3 +109,7 @@ compareVersion() {
   fi
     return 1
 }
+
+pipPathDir() {
+  echo "$DOT_FILE_PATH/bin/pip/${1}"
+}

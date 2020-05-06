@@ -152,8 +152,7 @@ function installationFromGithubRelease() {
 }
 
 getVersionPackagePip() {
-  INSTALL_DIR=$DOT_FILE_PATH
-  INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
+  INSTALL_DIR=$(pipPathDir $NAME)
 
   local VET=$($INSTALL_DIR/.venv/bin/pip list | grep "^$PIP_PACKAGE ")
   VET=($VET)
@@ -162,8 +161,7 @@ getVersionPackagePip() {
 
 function installationFromPip() {
   VERSION=$(pipLatestRelease $PIP_PACKAGE)
-  INSTALL_DIR=$DOT_FILE_PATH
-  INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
+  INSTALL_DIR=$(pipPathDir $NAME)
   echo "python3 -m venv $INSTALL_DIR/.venv"
   echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
   echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=\`dirname \$0\`\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$INSTALL_NAME \$@' > $INSTALL_DIR/$INSTALL_NAME"

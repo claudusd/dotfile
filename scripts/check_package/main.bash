@@ -113,7 +113,7 @@ function installationFromPip() {
   INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
   echo "python3 -m venv $INSTALL_DIR/.venv"
   echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
-  echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=\`dirname \$0\`\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$PIP_PACKAGE \$@' > $INSTALL_DIR/$INSTALL_NAME"
+  echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=\`dirname \$0\`\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$INSTALL_NAME \$@' > $INSTALL_DIR/$INSTALL_NAME"
   echo "chmod +x $INSTALL_DIR/$INSTALL_NAME"
   echo "make dot-$NAME"
   unset INSTALL_DIR

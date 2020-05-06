@@ -17,9 +17,9 @@ function preInstall() {
   do
     checkAptPackageInstalled $package
      if [ $? = 0 ]; then
-      echo -e " $(writeGreen ${CHAR_OK}) ${package}"
+      echo -e " $(writeGreen ${CHAR_PACKAGE}) apt install ${package} $(writeItalic "(installed)" )"
     else
-      echo -e " $(writeRed ${CHAR_KO}) apt install ${package}";
+      echo -e " $(writeRed ${CHAR_PACKAGE}) apt install ${package}";
     fi;
   done
 }

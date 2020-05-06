@@ -5,6 +5,7 @@ CHAR_KO=' ✗'
 CHAR_WARNING=' ⚠'
 CHAR_BOOK=' 📖'
 CHAR_STUDENT=' '
+CHAR_PACKAGE=' 📦'
 
 COLOR_RESET='\033[0m'
 COLOR_RED='\033[31m'
@@ -52,6 +53,10 @@ writeStrike() {
 
 writeUnderline() {
     echo -e "\033[4m$1\033[0m"
+}
+
+writeItalic() {
+    echo -e "\033[3m$1\033[0m"
 }
 
 githubLatestRelease() {

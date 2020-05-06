@@ -1,8 +1,6 @@
-DIRECTORY=`readlink -f "${BASH_SOURCE[0]}"`
-DIRECTORY=`dirname $DIRECTORY`
-DIRECTORY="$DIRECTORY/../../../scripts/home"
+DIRECTORY="$DOT_FILE_PATH/scripts/home"
 
-export PATH="$PATH:$DIRECTORY/bin"
+export PATH="$PATH:$DOT_FILE_PATH/scripts/home/bin"
 
 _home_complete() {
     COMMANDS=$(ls "$DIRECTORY/command")

@@ -1,0 +1,3 @@
+PIP_PACKAGE="python-openstackclient"
+INSTALL_DESCRIPTION="Openstack client"
+INSTALL_NAME="openstack"

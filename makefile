@@ -54,3 +54,6 @@ dot-haskell: ## Setup dotfile for haskell
 
 dot-vdirsyncer: ## Setup dotfile for vdirsyncer
 	@stow -d stow/ -t ~ vdirsyncer
+
+dot-openstack-cli: ## Setup dotfile for openstack-cli
+	@stow -d stow/ -t ~ openstack-cli

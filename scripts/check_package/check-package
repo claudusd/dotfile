@@ -15,12 +15,28 @@ function preInstall() {
 
   for package in $PRE_PACKAGE_NAME
   do
-    checkAptPackageInstalled $package
-     if [ $? = 0 ]; then
-      echo -e " $(writeGreen ${CHAR_PACKAGE}) apt install ${package} $(writeItalic "(installed)" )"
-    else
-      echo -e " $(writeRed ${CHAR_PACKAGE}) apt install ${package}";
-    fi;
+    if [ -f $DIRECTORY/list/$package.dependency ]; then 
+      source $DIRECTORY/list/$package.dependency
+      echo -e "$(writeBold ${DEPENDENCY_NAME})  -  $DEPENDENCY_DESCRIPTION"
+      for subPackage in $DEPENDENCY_PACKAGE_NAME
+      do 
+        checkAptPackageInstalled $subPackage
+        if [ $? = 0 ]; then
+          echo -e "$(writeGreen ${CHAR_PACKAGE}) apt install ${subPackage} $(writeItalic "(installed)" )"
+        else
+          echo -e "$(writeRed ${CHAR_PACKAGE}) apt install ${subPackage}";
+        fi;
+      done
+      echo
+      clean_dependency_vars
+    else 
+      checkAptPackageInstalled $package
+      if [ $? = 0 ]; then
+        echo -e " $(writeGreen ${CHAR_PACKAGE}) apt install ${package} $(writeItalic "(installed)" )"
+      else
+        echo -e " $(writeRed ${CHAR_PACKAGE}) apt install ${package}";
+      fi;
+    fi
   done
 }
 
@@ -147,9 +163,9 @@ function check() {
   checkInstalled $INSTALL_NAME
 
   if [ $? = 0 ]; then
-    installed $NAME "$INSTALL_DESCRIPTION"
+    installed $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
   else
-    uninstalled $NAME "$INSTALL_DESCRIPTION"
+    uninstalled $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
   fi;
 }
 
@@ -178,6 +194,12 @@ clean_vars() {
   unset PIP_PACKAGE;
 }
 
+clean_dependency_vars() {
+  unset DEPENDENCY_NAME;
+  unset DEPENDENCY_PACKAGE_NAME;
+  unset DEPENDENCY_DESCRIPTION;
+}
+
 if ! which jq > /dev/null; then
 	writeBold "Required package" 
 	NAME="jq"
@@ -187,6 +209,16 @@ if ! which jq > /dev/null; then
 fi
 
 if [ -z "$1" ]; then 
+  NAME_MAX_SIZE=0
+  for file in $DIRECTORY/list/*.install
+  do
+    NAME=$(basename $file);
+    NAME=${NAME%.install}
+    if [ $NAME_MAX_SIZE -le ${#NAME}  ]; then 
+      NAME_MAX_SIZE=${#NAME}
+    fi
+  done
+
   for file in $DIRECTORY/list/*.install
   do
     if [ -f $file ]; then
@@ -200,6 +232,7 @@ if [ -z "$1" ]; then
 else
   if [ -f $DIRECTORY/list/$1.install ]; then
     NAME=$1
+    NAME_MAX_SIZE=${#NAME}
     source $DIRECTORY/list/$1.install;
     check
     if [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then
@@ -212,7 +245,5 @@ else
   else 
     echo -e "$(writeRed "Cannot found install for ${1}")";
     exit 1
-  fi
-  
+  fi  
 fi
-

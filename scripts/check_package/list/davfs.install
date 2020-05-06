@@ -1,3 +1,0 @@
-INSTALL_NAME="mount.davfs"
-INSTALL_DESCRIPTION="Mount Webdav"
-PACKAGE_NAME="davfs2"

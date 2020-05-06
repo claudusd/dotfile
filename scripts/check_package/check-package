@@ -59,6 +59,17 @@ function installation() {
     echo "curl -L '$INSTALL_DEB_URL' -o /tmp/$NAME.deb"
     echo "dpkg -i /tmp/$NAME.deb"
     echo "rm /tmp/$NAME.deb"
+  elif [ -n "$INSTALL_ZIP_URL" ]; then
+    if [ -n "$GITHUB_REPO" ]; then 
+      LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
+      INSTALL_ZIP_URL=$(echo $INSTALL_ZIP_URL | sed "s/--VERSION--/$LATEST_VERSION/g")
+    fi
+    echo $INSTALL_ZIP_URL;
+    echo "curl -L '$INSTALL_ZIP_URL' -o /tmp/$NAME.zip"
+    echo "unzip /tmp/$NAME.zip -d /tmp/"
+    echo "mv /tmp/$INSTALL_NAME /usr/local/bin/$INSTALL_NAME"
+    echo "chmod +x /usr/local/bin/$INSTALL_NAME"
+    echo "rm /tmp/$NAME.zip"
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
   elif [ -n "$GITHUB_REPO" ]; then

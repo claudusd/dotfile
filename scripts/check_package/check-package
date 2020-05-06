@@ -52,18 +52,12 @@ function installation() {
   if [ -n "$INSTALL_URL" ]; then
     echo "Installation page : $INSTALL_URL";
   elif [ -n "$INSTALL_DEB_URL" ]; then
-    if [ -n "$GITHUB_REPO" ]; then 
-      LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
-      INSTALL_DEB_URL=$(echo $INSTALL_DEB_URL | sed "s/--VERSION--/$LATEST_VERSION/g")
-    fi
+    INSTALL_DEB_URL=$(rewriteUrl $INSTALL_DEB_URL)
     echo "curl -L '$INSTALL_DEB_URL' -o /tmp/$NAME.deb"
     echo "dpkg -i /tmp/$NAME.deb"
     echo "rm /tmp/$NAME.deb"
   elif [ -n "$INSTALL_ZIP_URL" ]; then
-    if [ -n "$GITHUB_REPO" ]; then 
-      LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
-      INSTALL_ZIP_URL=$(echo $INSTALL_ZIP_URL | sed "s/--VERSION--/$LATEST_VERSION/g")
-    fi
+    INSTALL_ZIP_URL=$(rewriteUrl $INSTALL_ZIP_URL)
     echo $INSTALL_ZIP_URL;
     echo "curl -L '$INSTALL_ZIP_URL' -o /tmp/$NAME.zip"
     echo "unzip /tmp/$NAME.zip -d /tmp/"
@@ -115,6 +109,15 @@ function installation() {
   if [ -n "$INSTALL_DOC" ]; then
     echo "$CHAR_BOOK $INSTALL_DOC"
   fi;
+}
+
+function rewriteUrl() {
+  local URL=$1
+  if [ -n "$GITHUB_REPO" ]; then 
+    LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
+    URL=$(echo $URL | sed "s/--VERSION--/$LATEST_VERSION/g")
+  fi
+  echo $URL;
 }
 
 function checkVersionFromGithub() {

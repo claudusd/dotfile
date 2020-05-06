@@ -51,3 +51,6 @@ dot-ledger: ## Setup dotfile for ledger
 
 dot-haskell: ## Setup dotfile for haskell
 	@stow -d stow/ -t ~ haskell
+
+dot-vdirsyncer: ## Setup dotfile for vdirsyncer
+	@stow -d stow/ -t ~ vdirsyncer

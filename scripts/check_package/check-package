@@ -50,11 +50,6 @@ function installation() {
   fi
 
   if [ -n "$INSTALL_URL" ]; then
-    if [ -n "$GITHUB_REPO" ]; then 
-      VERSION=$(githubLatestRelease $GITHUB_REPO)
-      checkVersionFromGithub $VERSION
-      unset VERSION
-    fi
     echo "Installation page : $INSTALL_URL";
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
@@ -104,17 +99,29 @@ function installation() {
 }
 
 function checkVersionFromGithub() {
-  checkNewVersion $INSTALL_NAME $1
+  LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
+  CURRENT_VERSION=$(getVersion $INSTALL_NAME)
+  compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
-    CURRENT_VERSION=$(getVersion $INSTALL_NAME)
-    echo -e "$(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $INSTALL_NAME) from $CURRENT_VERSION to $(writeUnderline $VERSION)"
-    unset CURRENT_VERSION
+    newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
   fi
+  unset LATEST_VERSION;
+  unset CURRENT_VERSION;
+}
+
+function checkVersionFromPip() {
+  LATEST_VERSION=$(pipLatestRelease $PIP_PACKAGE)
+  CURRENT_VERSION=$(getVersionPackagePip)
+  compareVersion $CURRENT_VERSION $LATEST_VERSION
+  if [ $? -eq 1 ]; then
+    newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
+  fi
+  unset LATEST_VERSION;
+  unset CURRENT_VERSION;
 }
 
 function installationFromGithubRelease() {
   VERSION=$(githubLatestRelease $GITHUB_REPO)
-  checkVersionFromGithub $VERSION
   BIN_PATH="/usr/local/bin/$NAME"
   echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
   echo "chmod +x $BIN_PATH"
@@ -122,10 +129,18 @@ function installationFromGithubRelease() {
   unset VERSION
 }
 
+getVersionPackagePip() {
+  INSTALL_DIR=$DOT_FILE_PATH
+  INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
+
+  local VET=$($INSTALL_DIR/.venv/bin/pip list | grep "^$PIP_PACKAGE ")
+  VET=($VET)
+  echo ${VET[1]}
+}
+
 function installationFromPip() {
   VERSION=$(pipLatestRelease $PIP_PACKAGE)
   INSTALL_DIR=$DOT_FILE_PATH
-  INSTALL_DIR=$(pwd $INSTALL_DIR/../../)
   INSTALL_DIR="$INSTALL_DIR/bin/pip/$NAME"
   echo "python3 -m venv $INSTALL_DIR/.venv"
   echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
@@ -148,6 +163,16 @@ function checkSourceListUpdate() {
   fi
 }
 
+function checkVersion() {
+  if [ -n "$GITHUB_REPO" ]; then 
+    checkVersionFromGithub $VERSION
+  fi
+
+  if [ -n "$PIP_PACKAGE" ]; then 
+    checkVersionFromPip $VERSION
+  fi
+}
+
 ###
 # @param bin
 ###
@@ -164,6 +189,7 @@ function check() {
 
   if [ $? = 0 ]; then
     installed $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
+    checkVersion
   else
     uninstalled $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
   fi;

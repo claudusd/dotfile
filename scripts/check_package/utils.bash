@@ -49,6 +49,10 @@ uninstalled() {
   echo -e " $(writeRed ${CHAR_KO}) $(writeBold ${1}) $(trailling $3 ${#1}) -  $2";
 }
 
+newVersionAvailable() {
+  echo -e "    $(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $1) from $2 to $(writeUnderline $3)"
+}
+
 writeBold() {
     echo -e "\033[1m$1\033[0m"
 }
@@ -94,17 +98,14 @@ extractVersion() {
   echo $1 | sed -n -E 's/[0-9A-Za-z -]*(([0-9]+\.?)+).*/\1/p'
 }
 
-checkNewVersion() {
-  checkInstalled $1
-  if [ $? = 0 ]; then
-    version=$(getVersion $1)
-    echo $version | grep "$2" > /dev/null 2>&1
-    if [ $? -eq 0 ]; then
-      return 0
-    fi
-    return 1
-  else
+###
+# @paran current version
+# @param latest version
+###
+compareVersion() {
+  echo "$1" | grep "$2" > /dev/null 2>&1
+  if [ $? -eq 0 ]; then
     return 0
-  fi;
+  fi
+    return 1
 }
-

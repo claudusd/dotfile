@@ -35,11 +35,11 @@ writeOrange() {
 }
 
 installed() {
-  echo -e " $(writeGreen ${CHAR_OK}) ${1}  -  $2"
+  echo -e " $(writeGreen ${CHAR_OK}) $(writeBold ${1})  -  $2"
 }
 
 uninstalled() {
-  echo -e " $(writeRed ${CHAR_KO}) ${1}  -  $2";
+  echo -e " $(writeRed ${CHAR_KO}) $(writeBold ${1})  -  $2";
 }
 
 writeBold() {

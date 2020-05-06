@@ -17,9 +17,6 @@ dot-prompt: ## Setup dotfile for prompt
 dot-hashicorp: ## Setup dotfile for hashicorp
 	@stow -d stow/ -t ~/ hashicorp
 
-check-package: ## Check package installed
-	@scripts/check_package/main.bash
-
 ssh-personal: ## Setup dotfile for personal's ssh
 	@stow -d stow/ssh/ -t ~/.ssh/ global
 	@stow -d stow/ssh/ -t ~/.ssh/ personal

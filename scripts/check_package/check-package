@@ -8,6 +8,7 @@ GITHUB_AUTH="claudusd:$TOKEN_GITHUB_COM"
 
 if [ -f /etc/lsb-release ]; then
   source /etc/lsb-release
+  DISTRIB_ID=$(echo "$DISTRIB_ID" | tr '[:upper:]' '[:lower:]')
 fi
 
 function preInstall() {
@@ -271,6 +272,9 @@ if [ -z "$1" ]; then
         NAME=$(basename $file);
         NAME=${NAME%.install}
         source $file;
+	if [ -f $file.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
+	    source $file.$DISTRIB_ID-$DISTRIB_CODENAME
+	fi
         check
         clean_vars;
     fi
@@ -279,7 +283,12 @@ else
   if [ -f $DIRECTORY/list/$1.install ]; then
     NAME=$1
     NAME_MAX_SIZE=${#NAME}
+
     source $DIRECTORY/list/$1.install;
+
+    if [ -f $DIRECTORY/list/$1.install.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
+        source $DIRECTORY/list/$1.install.$DISTRIB_ID-$DISTRIB_CODENAME
+    fi
     check
     if [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then
       source $DIRECTORY/list/$NAME.pre_install

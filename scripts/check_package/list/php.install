@@ -1,5 +1,3 @@
 NAME="php"
-#INSTALL_NAME="ghc"
 INSTALL_DESCRIPTION="First love"
 PACKAGE_NAME="php7.4"
-INSTALL_PPA="ppa:ondrej/php"

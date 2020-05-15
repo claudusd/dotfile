@@ -1,0 +1,2 @@
+PIP_PACKAGE="meson"
+INSTALL_DESCRIPTION="Build system"

@@ -1,0 +1,4 @@
+INSTALL_NAME="yq"
+INSTALL_DESCRIPTION="Yaml Query"
+INSTALL_DOC="https://github.com/mikefarah/yq"
+INSTALL_PPA="ppa:rmescandon/yq"

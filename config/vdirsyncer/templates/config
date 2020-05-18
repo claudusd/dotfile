@@ -1,0 +1,24 @@
+[general]
+status_path="~/.local/share/vdirsyncer"
+
+[pair perso_contacts]
+a = "perso_contacts_local"
+b = "perso_contacts_remote"
+
+collections = ["from a", "from b"]
+metadata = ["displayname"]
+conflict_resolution = null
+
+[storage perso_contacts_local]
+type = "filesystem"
+path = "~/.local/share/contacts/"
+fileext = ".vcf"
+
+[storage perso_contacts_remote]
+type = "carddav"
+url = "https://carddav.fastmail.com/dav/addressbooks/user/$CALDAV_USERNAME/Default"
+username = "$CALDAV_USERNAME"
+password = "$CALDAV_PASSWORD"
+
+
+# http://simon.crespeau.emi.u-bordeaux.fr/posts/vdirsyncer/

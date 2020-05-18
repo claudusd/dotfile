@@ -1,0 +1,9 @@
+variables:
+  - name: CALDAV_USERNAME
+    description: "Caldav username"
+  - name: CALDAV_PASSWORD
+    description: "Caldav password"
+    type: "password"
+templates:
+    - src: config
+      dest: .config/vdirsyncer/config

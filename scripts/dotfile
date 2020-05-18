@@ -12,7 +12,7 @@ fi
 
 if [ -d "$DIRECTORY/config/$NAME/templates" ]; then
     CONFIG_JSON=$(cat "$DIRECTORY/config/$NAME/config.yml" | yq r  - --tojson)
-    # echo $CONFIG_JSON
+
     for row in $(echo $CONFIG_JSON | jq -r '.variables[] | @base64'); do
         VAR=$(echo ${row} |  base64 -di)
         TYPE="$(echo $VAR | jq -r .type )"
@@ -23,7 +23,7 @@ if [ -d "$DIRECTORY/config/$NAME/templates" ]; then
             read $(echo $VAR | jq -r .name )
         fi
     done
-    echo $CALDAV_USERNAME
+
     for row in $(echo $CONFIG_JSON | jq -r '.templates[] | @base64'); do
         TEMPLATE=$(echo ${row} |  base64 -di)
         INPUT_PATH="$DIRECTORY/config/$NAME/templates/$(echo $TEMPLATE | jq -r .src )"
@@ -35,10 +35,10 @@ if [ -d "$DIRECTORY/config/$NAME/templates" ]; then
         do
             eval echo "$line" >> "$DIRECTORY/config/$NAME/output_template/$OUTPUT_DIR/$FILE_NAME"
         done < "$INPUT_PATH"
-        echo "Template $INPUT_PATH ->  $OUTPUT_DIR"
     done
+    stow -d "$DIRECTORY/config/$NAME/" -t ~/ output_template
 fi
 
 if [ -d "$DIRECTORY/config/$NAME/stow" ]; then 
-    @stow -d "$DIRECTORY/config/$NAME/stow/" -t ~/ $NAME
+    stow -d "$DIRECTORY/config/$NAME/stow/" -t ~/ $NAME
 fi

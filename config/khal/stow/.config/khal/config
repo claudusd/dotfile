@@ -1,6 +1,6 @@
 [calendars]
 [[perso]]
-path = .local/share/agenda_perso/01f6d0bc-cb6d-47d2-bb3e-7570116400f5/
+path = ~/.local/share/agenda_perso/01f6d0bc-cb6d-47d2-bb3e-7570116400f5/
 
 [locale]
 local_timezone= Europe/Berlin

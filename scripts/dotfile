@@ -31,9 +31,15 @@ if [ -d "$DIRECTORY/config/$NAME/templates" ]; then
         OUTPUT_DIR="$(dirname $OUTPUT_DIR)"
         FILE_NAME=$(basename  $(echo $TEMPLATE | jq -r .dest))
         mkdir -p "$DIRECTORY/config/$NAME/output_template/$OUTPUT_DIR"
+
+        if [ -f $DIRECTORY/config/$NAME/output_template/$OUTPUT_DIR/$FILE_NAME ]; then
+            rm $DIRECTORY/config/$NAME/output_template/$OUTPUT_DIR/$FILE_NAME
+        fi
+
         while read line
         do
-            eval echo "$line" >> "$DIRECTORY/config/$NAME/output_template/$OUTPUT_DIR/$FILE_NAME"
+            line_quoted=$(echo "${line//\"/\\\"}")
+            eval echo $line_quoted >> "$DIRECTORY/config/$NAME/output_template/$OUTPUT_DIR/$FILE_NAME"
         done < "$INPUT_PATH"
     done
     stow -d "$DIRECTORY/config/$NAME/" -t ~/ output_template

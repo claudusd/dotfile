@@ -1,0 +1,12 @@
+[calendars]
+[[perso]]
+path = .local/share/agenda_perso/01f6d0bc-cb6d-47d2-bb3e-7570116400f5/
+
+[locale]
+local_timezone= Europe/Berlin
+default_timezone= Europe/Berlin
+timeformat= %H:%M
+dateformat= %d.%m.
+longdateformat= %d.%m.%Y
+datetimeformat= %d.%m. %H:%M
+longdatetimeformat= %d.%m.%Y %H:%M

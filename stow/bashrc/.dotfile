@@ -3,4 +3,4 @@ LOCAL_DIR=`realpath $LOCAL_DIR/../../`
 export DOT_FILE_PATH=$LOCAL_DIR
 unset LOCAL_DIR
 
-export PATH=$PATH:$DOT_FILE_PATH/scripts/check_package
+export PATH=$PATH:$DOT_FILE_PATH/scripts/check_package:$DOT_FILE_PATH/bin/pip_dir

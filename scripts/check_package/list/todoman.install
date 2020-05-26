@@ -1,0 +1,3 @@
+PIP_PACKAGE="todoman"
+INSTALL_DESCRIPTION="Show todo"
+INSTALL_NAME="todo"

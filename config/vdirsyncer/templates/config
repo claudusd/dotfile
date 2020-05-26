@@ -1,24 +1,20 @@
 [general]
 status_path="~/.local/share/vdirsyncer"
 
-[pair perso_contacts]
-a = "perso_contacts_local"
-b = "perso_contacts_remote"
-
+[pair perso_agenda]
+a = "perso_agenda_local"
+b = "perso_agenda_remote"
 collections = ["from a", "from b"]
-metadata = ["displayname"]
 conflict_resolution = null
 
-[storage perso_contacts_local]
+[storage perso_agenda_local]
 type = "filesystem"
-path = "~/.local/share/contacts/"
-fileext = ".vcf"
+path = "~/.local/share/agenda_perso/"
+fileext = ".ics"
 
-[storage perso_contacts_remote]
-type = "carddav"
-url = "https://carddav.fastmail.com/dav/addressbooks/user/$CALDAV_USERNAME/Default"
+[storage perso_agenda_remote]
+type = "caldav"
+url = "https://caldav.fastmail.com/dav/calendars/user/$CALDAV_USERNAME/01f6d0bc-cb6d-47d2-bb3e-7570116400f5/"
 username = "$CALDAV_USERNAME"
 password = "$CALDAV_PASSWORD"
-
-
 # http://simon.crespeau.emi.u-bordeaux.fr/posts/vdirsyncer/

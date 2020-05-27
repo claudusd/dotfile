@@ -8,4 +8,8 @@ NAME=$1
 
 pip_path=$(pipPathDir "$NAME")
 
+if [ $3 -eq 0 ]; then
 echo "$pip_path/${INSTALL_NAME} complete > $DOT_FILE_PATH/stow/${NAME}/.bashrc.d/$NAME-complete.bashrc"
+else
+echo "rm $DOT_FILE_PATH/stow/${NAME}/.bashrc.d/$NAME-complete.bashrc"
+fi;

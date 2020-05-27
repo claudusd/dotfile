@@ -4,6 +4,25 @@ DIRECTORY=`dirname $0`
 
 source $DIRECTORY/utils.bash
 
+UNINSTALL=0
+
+while getopts ":hu" option; do
+  case "$option" in
+    u)
+      UNINSTALL=1
+      shift "$((OPTIND-1))"
+      ;;
+    h)
+      echo "Usage: [-u] <package_name>"
+      echo "Run package check"
+      echo -e "  -u\t\tUninstall procedure"
+      echo -e "  -h\t\tShow help"
+      exit 0
+      ;;
+esac
+done
+
+
 GITHUB_AUTH="claudusd:$TOKEN_GITHUB_COM"
 
 if [ -f /etc/lsb-release ]; then
@@ -39,6 +58,31 @@ function preInstall() {
       fi;
     fi
   done
+}
+
+function uninstall() {
+  if [ -f "$DIRECTORY/list/$NAME.post_install" ] || [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then 
+    echo -e "$(writeUnderline 'Uninstall:')"
+  fi
+
+  if [ -n "$INSTALL_DEB_URL" ]; then 
+    echo "apt remove $NAME"
+  elif [ -n "$UNINSTALL_COMMAND" ]; then
+    echo "$UNINSTALL_COMMAND"
+  elif [ -n "$GITHUB_REPO" ]; then
+    installationFromGithubRelease
+  elif [ -n "$PIP_PACKAGE" ]; then
+    installationFromPip
+  else 
+    echo "apt remove $PACKAGE_NAME $PACKAGE_NAME_EXTRA"
+    if [ -n "$INSTALL_PPA" ]; then
+      echo "add-apt-repository --remove $INSTALL_PPA"
+      echo "apt update"
+    elif [ -n "$INSTALL_REPOSITORY_URL" ]; then
+      echo "rm /etc/apt/sources.list.d/$INSTALL_NAME.list"
+      echo "apt update"
+    fi
+  fi
 }
 
 function installation() {
@@ -101,15 +145,6 @@ function installation() {
 
     echo "apt install $PACKAGE_NAME $PACKAGE_NAME_EXTRA"
   fi
-
-  if [ -f "$DIRECTORY/list/$NAME.post_install" ]; then
-    echo -e "$(writeUnderline 'Post install:')"
-    $DIRECTORY/list/$NAME.post_install "$NAME" "$DIRECTORY/list/$NAME.install"
-  fi
-
-  if [ -n "$INSTALL_DOC" ]; then
-    echo "$CHAR_BOOK $INSTALL_DOC"
-  fi;
 }
 
 function rewriteUrl() {
@@ -144,12 +179,16 @@ function checkVersionFromPip() {
 }
 
 function installationFromGithubRelease() {
-  VERSION=$(githubLatestRelease $GITHUB_REPO)
   BIN_PATH="/usr/local/bin/$NAME"
-  echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
-  echo "chmod +x $BIN_PATH"
+  if [ $UNINSTALL -eq 0 ]; then 
+    VERSION=$(githubLatestRelease $GITHUB_REPO)
+    echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
+    echo "chmod +x $BIN_PATH"
+    unset VERSION
+  else
+    echo "rm $BIN_PATH"
+  fi
   unset BIN_PATH
-  unset VERSION
 }
 
 getVersionPackagePip() {
@@ -163,10 +202,15 @@ getVersionPackagePip() {
 function installationFromPip() {
   VERSION=$(pipLatestRelease $PIP_PACKAGE)
   INSTALL_DIR=$(pipPathDir $NAME)
-  echo "python3 -m venv $INSTALL_DIR/.venv"
-  echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
-  echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=$INSTALL_DIR\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$INSTALL_NAME \$@' > $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
-  echo "chmod +x $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
+  if [ $UNINSTALL -eq 0 ]; then
+    echo "python3 -m venv $INSTALL_DIR/.venv"
+    echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
+    echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=$INSTALL_DIR\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$INSTALL_NAME \$@' > $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
+    echo "chmod +x $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
+  else 
+    echo "rm -r $INSTALL_DIR"
+    echo "rm $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
+  fi
   unset INSTALL_DIR
   unset VERSION
 }
@@ -289,12 +333,31 @@ else
         source $DIRECTORY/list/$1.install.$DISTRIB_ID-$DISTRIB_CODENAME
     fi
     check
-    if [ -f "$DIRECTORY/list/$NAME.pre_install" ]; then
+
+    if [ -n "$INSTALL_DOC" ]; then
+      echo "$CHAR_BOOK $INSTALL_DOC"
+    fi;
+
+    if [ -f "$DIRECTORY/list/$NAME.pre_install" ] && [ $UNINSTALL -eq 0 ]; then
       source $DIRECTORY/list/$NAME.pre_install
       preInstall
     fi
 
-    installation
+    if [ $UNINSTALL -eq 0 ]; then 
+      installation
+    else 
+      uninstall
+    fi
+
+    if [ -f "$DIRECTORY/list/$NAME.post_install" ]; then
+      if [ $UNINSTALL -eq 0 ]; then 
+        echo -e "$(writeUnderline 'Post install:')"
+      else 
+        echo -e "$(writeUnderline 'Post uninstall:')"
+      fi
+      $DIRECTORY/list/$NAME.post_install "$NAME" "$DIRECTORY/list/$NAME.install" $UNINSTALL
+    fi
+
     clean_vars;
   else 
     echo -e "$(writeRed "Cannot found install for ${1}")";

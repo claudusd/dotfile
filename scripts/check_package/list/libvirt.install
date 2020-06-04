@@ -1,4 +1,4 @@
 INSTALL_NAME="virsh"
 INSTALL_DESCRIPTION="Lib for virtualisatio"
-PACKAGE_NAME="virtinst libvirt-clients"
+PACKAGE_NAME="virtinst libvirt-daemon-system"
 INSTALL_DOC="https://guide.ubuntu-fr.org/server/libvirt.html"

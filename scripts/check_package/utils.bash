@@ -81,8 +81,21 @@ githubLatestRelease() {
     echo $(extractVersion $VERSION)
     return
   fi
-  VERSION=$(echo $RESULT | jq -r '.tag_name')
-  echo $(extractVersion $VERSION)
+  $(echo $RESULT | jq -r '.tag_name' | grep 'alpha' &> /dev/null)
+  if [ $? -eq 0 ]; then 
+    RESULT_2=$(curl -f -u "$GITHUB_AUTH" https://api.github.com/repos/$1/releases 2> /dev/null)
+    for row in $(echo "${RESULT_2}" | jq -r '.[] | @base64'); do
+      RELEASE_NAME=$(echo ${row} | base64 -di | jq -r .name)
+      $(echo $RELEASE_NAME | grep 'alpha' &> /dev/null)
+      if [ $? -ne 0 ]; then 
+        echo $(extractVersion $RELEASE_NAME)
+        break
+      fi      
+    done
+  else
+    VERSION=$(echo $RESULT | jq -r '.tag_name')
+    echo $(extractVersion $VERSION)
+  fi
 }
 
 pipLatestRelease() {

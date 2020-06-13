@@ -182,7 +182,12 @@ function installationFromGithubRelease() {
   BIN_PATH="/usr/local/bin/$NAME"
   if [ $UNINSTALL -eq 0 ]; then 
     VERSION=$(githubLatestRelease $GITHUB_REPO)
-    echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
+    $(echo $GITHUB_RELEASE_NAME | grep '.gz' &> /dev/null)
+    if [ $? -eq 0 ]; then 
+      echo "sh -c \"curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' 2> /dev/null | gzip -d > $BIN_PATH\""
+    else
+      echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
+    fi
     echo "chmod +x $BIN_PATH"
     unset VERSION
   else

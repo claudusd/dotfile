@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-DIRECTORY="`dirname "$0"`/../"
-
+DIRECTORY="$(realpath `dirname "$0"`/../)"
 NAME=$1
 
 if [ ! -d "$DIRECTORY/config/$NAME" ]; then 
@@ -43,6 +42,24 @@ if [ -d "$DIRECTORY/config/$NAME/templates" ]; then
         done < "$INPUT_PATH"
     done
     stow -d "$DIRECTORY/config/$NAME/" -t ~/ output_template
+fi
+
+if [ -d "$DIRECTORY/config/$NAME/directories" ]; then 
+    CONFIG_JSON=$(cat "$DIRECTORY/config/$NAME/config.yml" | yq r  - --tojson)
+    for row in $(echo $CONFIG_JSON | jq -r '.directories[] | @base64'); do
+        DIRECTORY_JSON=$(echo ${row} | base64 -di)
+        SRC=$(echo $DIRECTORY_JSON | jq -r .src)
+        DEST=$(echo $DIRECTORY_JSON | jq -r .dest)
+        if [ -d "$DIRECTORY/config/$NAME/directories/$SRC" ]; then
+            DEST_PARENT=$(dirname $DEST)
+            DEST_PARENT=$(echo "${DEST_PARENT//\~/$HOME}")
+            mkdir -p "$DEST_PARENT"
+            DEST=$(echo "${DEST//\~/$HOME}")
+            if [ ! -L $DEST ]; then
+                ln -s $DIRECTORY/config/$NAME/directories/$SRC $DEST
+            fi
+        fi
+    done
 fi
 
 if [ -d "$DIRECTORY/config/$NAME/stow" ]; then 

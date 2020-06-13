@@ -1,0 +1,5 @@
+cheatpaths:
+    - name: personal
+      path: ~/.local/share/cheat/personal  # this is a separate directory and repository than above
+      tags: [ personal ]
+      readonly: false

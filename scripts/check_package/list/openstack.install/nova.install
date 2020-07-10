@@ -1,0 +1,3 @@
+PIP_PACKAGE="python-novaclient"
+INSTALL_DESCRIPTION="Nova client"
+INSTALL_NAME="nova"

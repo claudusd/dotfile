@@ -161,7 +161,7 @@ function checkVersionFromGithub() {
   CURRENT_VERSION=$(getVersion $INSTALL_NAME)
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
-    newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
+    newVersionAvailable $NAME "$CURRENT_VERSION" "$LATEST_VERSION"
   fi
   unset LATEST_VERSION;
   unset CURRENT_VERSION;
@@ -172,7 +172,7 @@ function checkVersionFromPip() {
   CURRENT_VERSION=$(getVersionPackagePip)
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
-    newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
+    newVersionAvailable $NAME "$CURRENT_VERSION" "$LATEST_VERSION"
   fi
   unset LATEST_VERSION;
   unset CURRENT_VERSION;
@@ -253,13 +253,18 @@ function check() {
   if [ -z "$PACKAGE_NAME" ]; then
       PACKAGE_NAME="$INSTALL_NAME";
   fi;
-
   checkInstalled $INSTALL_NAME
 
   if [ $? = 0 ]; then
+    if [ $GROUP -eq 1 ]; then 
+      printf "  "
+    fi
     installed $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
     checkVersion
   else
+    if [ $GROUP -eq 1 ]; then 
+      printf "  "
+    fi
     uninstalled $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
   fi;
 }
@@ -303,6 +308,8 @@ if ! which jq > /dev/null; then
 	exit 
 fi
 
+GROUP=0
+
 if [ -z "$1" ]; then 
   NAME_MAX_SIZE=0
   for file in $DIRECTORY/list/*.install
@@ -317,25 +324,47 @@ if [ -z "$1" ]; then
   for file in $DIRECTORY/list/*.install
   do
     if [ -f $file ]; then
-        NAME=$(basename $file);
-        NAME=${NAME%.install}
-        source $file;
-	if [ -f $file.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
-	    source $file.$DISTRIB_ID-$DISTRIB_CODENAME
-	fi
+      NAME=$(basename $file);
+      NAME=${NAME%.install}
+      source $file;
+	    if [ -f $file.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
+	      source $file.$DISTRIB_ID-$DISTRIB_CODENAME
+	    fi
         check
         clean_vars;
+    elif [ -d $file ]; then
+      NAME=$(basename $file);
+      NAME=${NAME%.install}
+      echo -e "$char_DINGBAT $(writeBold ${NAME})"
+      GROUP=1
+      for file2 in $file/*.install
+      do
+        NAME=$(basename $file2);
+        NAME=${NAME%.install}
+        source $file2;
+        check
+        clean_vars;
+      done
+      GROUP=0
     fi
   done
 else
-  if [ -f $DIRECTORY/list/$1.install ]; then
-    NAME=$1
+  PATH_FILE="$DIRECTORY/list/$1";
+  if [[ $1 == *"/"* ]]; then 
+    IFS='/' read -r -a split <<< "$1"
+    PATH_FILE="$DIRECTORY/list/${split[0]}.install/${split[1]}"
+  fi
+
+  if [ -f $PATH_FILE.install ]; then
+    NAME=$(basename $PATH_FILE.install);
+    NAME=${NAME%.install}
+
     NAME_MAX_SIZE=${#NAME}
 
-    source $DIRECTORY/list/$1.install;
+    source $PATH_FILE.install;
 
-    if [ -f $DIRECTORY/list/$1.install.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
-        source $DIRECTORY/list/$1.install.$DISTRIB_ID-$DISTRIB_CODENAME
+    if [ -f $PATH_FILE.install.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
+        source $PATH_FILE.install.$DISTRIB_ID-$DISTRIB_CODENAME
     fi
     check
 
@@ -343,8 +372,8 @@ else
       echo "$CHAR_BOOK $INSTALL_DOC"
     fi;
 
-    if [ -f "$DIRECTORY/list/$NAME.pre_install" ] && [ $UNINSTALL -eq 0 ]; then
-      source $DIRECTORY/list/$NAME.pre_install
+    if [ -f "$PATH_FILE.pre_install" ] && [ $UNINSTALL -eq 0 ]; then
+      source $PATH_FILE.pre_install
       preInstall
     fi
 
@@ -354,13 +383,13 @@ else
       uninstall
     fi
 
-    if [ -f "$DIRECTORY/list/$NAME.post_install" ]; then
+    if [ -f "$PATH_FILE.post_install" ]; then
       if [ $UNINSTALL -eq 0 ]; then 
         echo -e "$(writeUnderline 'Post install:')"
       else 
         echo -e "$(writeUnderline 'Post uninstall:')"
       fi
-      $DIRECTORY/list/$NAME.post_install "$NAME" "$DIRECTORY/list/$NAME.install" $UNINSTALL
+      $PATH_FILE.post_install "$NAME" "$DIRECTORY/list/$NAME.install" $UNINSTALL
     fi
 
     clean_vars;

@@ -376,7 +376,6 @@ else
       source $PATH_FILE.pre_install
       preInstall
     fi
-
     if [ $UNINSTALL -eq 0 ]; then 
       installation
     else 
@@ -389,7 +388,7 @@ else
       else 
         echo -e "$(writeUnderline 'Post uninstall:')"
       fi
-      $PATH_FILE.post_install "$NAME" "$DIRECTORY/list/$NAME.install" $UNINSTALL
+      $PATH_FILE.post_install "$NAME" "$PATH_FILE.install" $UNINSTALL
     fi
 
     clean_vars;

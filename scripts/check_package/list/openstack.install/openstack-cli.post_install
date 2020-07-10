@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 DIRECTORY=`dirname $0`
-source $DIRECTORY/../utils.bash
+source $DIRECTORY/../../utils.bash
 
 source "$2"
 NAME=$1

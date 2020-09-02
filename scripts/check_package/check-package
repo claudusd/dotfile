@@ -311,6 +311,14 @@ if ! which jq > /dev/null; then
 	exit 
 fi
 
+if ! which curl > /dev/null; then
+	writeBold "Required package"
+        NAME="curl"
+        INSTALL_DESCRIPTION="How call http in bash"
+        check
+        exit
+fi
+
 if [ -z "$1" ]; then 
   NAME_MAX_SIZE=0
   for file in $DIRECTORY/list/*.install

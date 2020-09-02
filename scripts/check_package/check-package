@@ -300,6 +300,9 @@ clean_dependency_vars() {
   unset DEPENDENCY_DESCRIPTION;
 }
 
+GROUP=0
+NAME_MAX_SIZE=0
+
 if ! which jq > /dev/null; then
 	writeBold "Required package" 
 	NAME="jq"
@@ -307,8 +310,6 @@ if ! which jq > /dev/null; then
 	check
 	exit 
 fi
-
-GROUP=0
 
 if [ -z "$1" ]; then 
   NAME_MAX_SIZE=0

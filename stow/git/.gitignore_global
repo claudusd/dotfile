@@ -8,3 +8,4 @@ yarn-error.log
 .terraform
 node_modules
 *.swp
+.venv

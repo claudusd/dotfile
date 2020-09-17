@@ -1,0 +1,5 @@
+INSTALL_NAME="gopls"
+INSTALL_DESCRIPTION="Go Language Server Protocol"
+GITHUB_REPO="golang/tools"
+INSTALL_SOURCE="go"
+INSTALL_SUBDIR_PATH="gopls"

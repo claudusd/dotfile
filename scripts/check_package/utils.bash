@@ -51,7 +51,7 @@ uninstalled() {
 }
 
 newVersionAvailable() {
-  echo -e "    $(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $1) from $2 to $(writeUnderline $3)"
+  echo -e "    $(writeOrange $CHAR_WARNING) You can upgrade $(writeBold $1) from $2 to $(writeUnderline $(extractVersion $3))"
 }
 
 writeBold() {
@@ -105,11 +105,17 @@ pipLatestRelease() {
 }
 
 getVersion() {
-  extractVersion "$($1 --version)"
+  $1 --version 2> /dev/null
+  if [ $? -eq 0 ]; then 
+    local VERSION=$($1 --version)
+    extractVersion $VERSION
+    return
+  fi
+  extractVersion "$($1 version)"
 }
 
 extractVersion() {
-  echo $1 | sed -n -E 's/[0-9A-Za-z -]*(([0-9]+\.?)+).*/\1/p'
+  echo $1 | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'
 }
 
 ###

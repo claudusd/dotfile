@@ -22,7 +22,6 @@ while getopts ":hu" option; do
 esac
 done
 
-
 GITHUB_AUTH="claudusd:$TOKEN_GITHUB_COM"
 
 if [ -f /etc/lsb-release ]; then
@@ -111,6 +110,21 @@ function installation() {
     echo "rm /tmp/$NAME.zip"
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
+  elif [ -n "$INSTALL_SOURCE" ]; then
+    VERSION=$(githubLatestRelease $GITHUB_REPO)
+    echo "curl -L https://github.com/golang/tools/archive/$VERSION.tar.gz | tar xz -C $INSTALL_NAME --transform 's!^[^/]\+\($\|/\)!$INSTALL_NAME\1!' -C /tmp"
+    if [ -n "$INSTALL_SUBDIR_PATH" ]; then
+      echo "cd /tmp/$INSTALL_NAME/$INSTALL_SUBDIR_PATH"
+    else
+      echo "cd /tmp/{$INSTALL_NAME"
+    fi
+
+    if [ "$INSTALL_SOURCE" == "go" ]; then
+      echo "go build"
+      echo "cp $INSTALL_NAME $DOT_FILE_PATH/bin/bin/"
+    fi
+
+    echo "rm -rf /tmp/$INSTALL_NAME/"
   elif [ -n "$GITHUB_REPO" ]; then
     installationFromGithubRelease
   elif [ -n "$PIP_PACKAGE" ]; then
@@ -164,7 +178,7 @@ function checkVersionFromGithub() {
   CURRENT_VERSION=$(getVersion $INSTALL_NAME)
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
-    newVersionAvailable $NAME "$CURRENT_VERSION" "$LATEST_VERSION"
+    newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
   fi
   unset LATEST_VERSION;
   unset CURRENT_VERSION;
@@ -296,6 +310,8 @@ clean_vars() {
   unset INSTALL_REPOSITORY_KEY;
   unset PIP_PACKAGE;
   unset INSTALL_REPOSITORY_NAME;
+  unset INSTALL_SOURCE;
+  unset INSTALL_SUBDIR_PATH;
 }
 
 clean_dependency_vars() {

@@ -79,7 +79,7 @@ githubLatestRelease() {
       return
     fi;
     VERSION=$(echo $RESULT | jq -r .[0].name)
-    echo $(extractVersion $VERSION)
+    echo $VERSION
     return
   fi
   $(echo $RESULT | jq -r '.tag_name' | grep 'alpha' &> /dev/null)
@@ -89,13 +89,13 @@ githubLatestRelease() {
       RELEASE_NAME=$(echo ${row} | base64 -di | jq -r .name)
       $(echo $RELEASE_NAME | grep 'alpha' &> /dev/null)
       if [ $? -ne 0 ]; then 
-        echo $(extractVersion $RELEASE_NAME)
+        echo $RELEASE_NAME
         break
       fi      
     done
   else
     VERSION=$(echo $RESULT | jq -r '.tag_name')
-    echo $(extractVersion $VERSION)
+    echo $VERSION
   fi
 }
 
@@ -117,7 +117,9 @@ extractVersion() {
 # @param latest version
 ###
 compareVersion() {
-  echo "$1" | grep "$2" > /dev/null 2>&1
+  local CURRENT=$(extractVersion ${1})
+  local LATEST=$(extractVersion ${2})
+  echo "$CURRENT" | grep "$LATEST" > /dev/null 2>&1
   if [ $? -eq 0 ]; then
     return 0
   fi

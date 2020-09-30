@@ -1,0 +1,8 @@
+```
+#!/bin/bash
+
+sed -i 's/user_pref("'$1'",.*);/user_pref("'$1'",'$2');/' user.js
+grep -q $1 user.js || echo "user_pref(\"$1\",$2);" >> user.js
+```
+## To use os certificat
+security.osclientcerts.autoload 1

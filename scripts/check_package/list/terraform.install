@@ -1,0 +1,8 @@
+INSTALL_NAME="terraform"
+INSTALL_DESCRIPTION="Build resource"
+INSTALL_REPOSITORY_URL="https://apt.releases.hashicorp.com"
+INSTALL_REPOSITORY_DISTRO="focal"
+INSTALL_REPOSITORY_COMPONENT="main"
+INSTALL_REPOSITORY_KEY="https://apt.releases.hashicorp.com/gpg"
+INSTALL_REPOSITORY_ARCH="amd64"
+INSTALL_REPOSITORY_NAME="hashicorp"

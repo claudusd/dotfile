@@ -17,6 +17,8 @@ COLOR_ORANGE='\033[33m'
 
 BOLD='\'
 
+/bin/bash "nvm_version"
+
 checkInstalled() {
   WHICH_COMMAND="which $1"
   $WHICH_COMMAND > /dev/null 2>&1
@@ -107,9 +109,15 @@ pipLatestRelease() {
 }
 
 getVersion() {
-  $1 --version 2> /dev/null
+  $($1 --version 2> /dev/null)
   if [ $? -eq 0 ]; then 
     local VERSION=$($1 --version)
+    extractVersion $VERSION
+    return
+  fi
+  $($1 version) 2> /dev/null
+  if [ $? -eq 0 ]; then 
+    local VERSION=$($1 version)
     extractVersion $VERSION
     return
   fi

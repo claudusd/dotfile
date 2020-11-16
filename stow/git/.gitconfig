@@ -12,6 +12,8 @@
     lgb = !git log --pretty=format:'%C(yellow)%h%Creset %Cgreen(%ar) %C(bold blue)%an% %C(red)%d%Creset%n %s %n %b' --no-abbrev-commit -n $(($(git rev-list master..HEAD --count)+1))
     lgbedm = !git log --pretty=format:'%C(yellow)%h%Creset %Cgreen(%ar) %C(bold blue)%an% %C(red)%d%Creset%n %s %n %b' --no-abbrev-commit -n $(($(git rev-list edm..HEAD --count)+1))
     lgbf = !git log --pretty=format:'%C(yellow)%h%  %Cgreen(%ar)%Creset %C(red)%d%Creset%n%n       %s%n' --name-only -n $(git rev-list master..HEAD --count) && echo 
+    diff-blame = "! /home/cdioudonnat/dotfile/bin/bin/gitdiffblame"
+
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f

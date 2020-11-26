@@ -29,3 +29,6 @@
 
 [pull]
     rebase = true
+
+[url "ssh://git@sources.devtools.local"]
+    insteadOf = https://sources.devtools.local

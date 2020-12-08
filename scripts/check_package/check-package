@@ -69,7 +69,7 @@ function uninstall() {
   elif [ -n "$UNINSTALL_COMMAND" ]; then
     echo "$UNINSTALL_COMMAND"
   elif [ -n "$GITHUB_REPO" ]; then
-    installationFromGithubRelease
+    uninstallGithub
   elif [ -n "$PIP_PACKAGE" ]; then
     installationFromPip
   else 
@@ -126,7 +126,9 @@ function installation() {
 
     echo "rm -rf /tmp/$INSTALL_NAME/"
   elif [ -n "$GITHUB_REPO" ]; then
-    installationFromGithubRelease
+    URL=$(getGithuUrlPath)
+    getCurlCommandFromUrl $URL
+    unset URL
   elif [ -n "$PIP_PACKAGE" ]; then
     installationFromPip
   elif [ -n "$PACKAGE_NAME" ]; then
@@ -195,21 +197,32 @@ function checkVersionFromPip() {
   unset CURRENT_VERSION;
 }
 
-function installationFromGithubRelease() {
-  BIN_PATH="/usr/local/bin/$NAME"
-  if [ $UNINSTALL -eq 0 ]; then 
-    VERSION=$(githubLatestRelease $GITHUB_REPO)
-    $(echo $GITHUB_RELEASE_NAME | grep '.gz' &> /dev/null)
-    if [ $? -eq 0 ]; then 
-      echo "sh -c \"curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' 2> /dev/null | gzip -d > $BIN_PATH\""
-    else
-      echo "curl -L 'https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME' -o $BIN_PATH"
-    fi
-    echo "chmod +x $BIN_PATH"
-    unset VERSION
+function getGithuUrlPath() {
+  VERSION=$(githubLatestRelease $GITHUB_REPO)
+  if [ -n "$GITHUB_RAW_PATH" ]; then
+    echo "https://raw.githubusercontent.com/$GITHUB_REPO/$VERSION/$GITHUB_RAW_PATH"
   else
-    echo "rm $BIN_PATH"
+    echo "https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME"
   fi
+}
+
+function getCurlCommandFromUrl() {
+  BIN_PATH="/usr/local/bin/$NAME"
+  if echo $1 | grep '.sh' &> /dev/null; then
+    echo "curl -o- $1 | bash"
+  elif echo $1 | grep '.gz' &> /dev/null; then
+    echo echo "sh -c \"curl -L '$1' 2> /dev/null | gzip -d > $BIN_PATH\""
+    echo "chmod +x $BIN_PATH"
+  else
+    echo "curl -L '$1' -o $BIN_PATH"
+    echo "chmod +x $BIN_PATH"
+  fi
+  unset BIN_PATH
+}
+
+function uninstallGithub() {
+  BIN_PATH="/usr/local/bin/$NAME"
+  echo "rm $BIN_PATH"
   unset BIN_PATH
 }
 
@@ -263,6 +276,10 @@ function checkVersion() {
 # @param bin
 ###
 function check() {
+  if [ -z "$CHECK_VERSION" ]; then 
+    CHECK_VERSION=1
+  fi
+
   if [ -z "$INSTALL_NAME" ]; then
     INSTALL_NAME="$NAME"
   fi
@@ -277,7 +294,9 @@ function check() {
       printf "  "
     fi
     installed $NAME "$INSTALL_DESCRIPTION" $NAME_MAX_SIZE
-    checkVersion
+    if [ $CHECK_VERSION -ne 0 ]; then 
+      checkVersion
+    fi
   else
     if [ $GROUP -eq 1 ]; then 
       printf "  "
@@ -312,6 +331,7 @@ clean_vars() {
   unset INSTALL_REPOSITORY_NAME;
   unset INSTALL_SOURCE;
   unset INSTALL_SUBDIR_PATH;
+  unset CHECK_VERSION;
 }
 
 clean_dependency_vars() {
@@ -338,7 +358,6 @@ if ! which curl > /dev/null; then
         check
         exit
 fi
-
 if [ -z "$1" ]; then 
   NAME_MAX_SIZE=0
   for file in $DIRECTORY/list/*.install

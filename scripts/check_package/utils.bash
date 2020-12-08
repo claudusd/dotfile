@@ -17,8 +17,6 @@ COLOR_ORANGE='\033[33m'
 
 BOLD='\'
 
-/bin/bash "nvm_version"
-
 checkInstalled() {
   WHICH_COMMAND="which $1"
   $WHICH_COMMAND > /dev/null 2>&1

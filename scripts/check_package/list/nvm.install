@@ -1,4 +1,6 @@
 INSTALL_NAME="nvm"
 INSTALL_DESCRIPTION="Get different node"
 INSTALL_DOC="https://github.com/nvm-sh/nvm"
-INSTALL_COMMAND="curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.0/install.sh | bash"
+GITHUB_REPO="nvm-sh/nvm"
+GITHUB_RAW_PATH="install.sh"
+CHECK_VERSION=0

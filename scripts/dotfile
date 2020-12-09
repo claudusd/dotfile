@@ -2,6 +2,17 @@
 
 DIRECTORY="$(realpath `dirname "$0"`/../)"
 
+while getopts ":h" option; do
+  case "$option" in
+    h)
+      echo "Usage: [-u] <dotfile_name>"
+      echo "Run dotfile install"
+      echo -e "  -h\t\tShow help"
+      exit 0
+      ;;
+esac
+done
+
 if [ -z "$1" ]; then
     echo "Dotfile available :"
     for dir in $DIRECTORY/config/*; do

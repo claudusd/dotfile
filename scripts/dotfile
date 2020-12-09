@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 
 DIRECTORY="$(realpath `dirname "$0"`/../)"
+
+if [ -z "$1" ]; then
+    echo "Dotfile available :"
+    for dir in $DIRECTORY/config/*; do
+        DOTFILE=$(basename $dir)
+        echo " - $DOTFILE"
+    done
+    exit 1
+fi
+
 NAME=$1
 
 if [ ! -d "$DIRECTORY/config/$NAME" ]; then 

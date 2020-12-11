@@ -240,6 +240,11 @@ function installationFromPip() {
   if [ $UNINSTALL -eq 0 ]; then
     echo "python3 -m venv $INSTALL_DIR/.venv"
     echo "$INSTALL_DIR/.venv/bin/pip install $PIP_PACKAGE==$VERSION"
+    if [ -n PIP_EXTRA_PACKAGE ]; then
+      for package in $(echo $PIP_EXTRA_PACKAGE | tr ";" "\n"); do
+        echo "$INSTALL_DIR/.venv/bin/pip install $package==$(pipLatestRelease $package)"
+      done
+    fi
     echo "echo -e '#!/usr/bin/env bash\nDIRECTORY=$INSTALL_DIR\nsource \$DIRECTORY/.venv/bin/activate\n\$DIRECTORY/.venv/bin/$INSTALL_NAME \$@' > $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
     echo "chmod +x $DOT_FILE_PATH/bin/pip_dir/$INSTALL_NAME"
   else 
@@ -332,6 +337,7 @@ clean_vars() {
   unset INSTALL_SOURCE;
   unset INSTALL_SUBDIR_PATH;
   unset CHECK_VERSION;
+  unset PIP_EXTRA_PACKAGE;
 }
 
 clean_dependency_vars() {

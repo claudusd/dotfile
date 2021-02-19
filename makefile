@@ -17,22 +17,11 @@ dot-prompt: ## Setup dotfile for prompt
 dot-hashicorp: ## Setup dotfile for hashicorp
 	@stow -d stow/ -t ~/ hashicorp
 
-ssh-personal: ## Setup dotfile for personal's ssh
-	@stow -d stow/ssh/ -t ~/.ssh/ global
-	@stow -d stow/ssh/ -t ~/.ssh/ personal
-
-ssh-work: ## Setup dotfile for work's ssh
-	@stow -d stow/ssh/ -t ~/.ssh/ global
-	@stow -d stow/ssh/ -t ~/.ssh/ work
-
 dot-vim: ## Setup dotfile for vim
 	@stow -d stow/ -t ~/ vim
 
 dot-openvswitch: ## Setup dotile for openvwitch
 	@stow -d stow/ -t ~/ openvswitch
-
-dot-rvm: ## Setup dotile for rvm
-	@stow -d stow/ -t ~ rvm
 
 dot-home: ## Setup dotfile for home
 	@stow -d stow/ -t ~ home
@@ -42,9 +31,6 @@ dot-ledger: ## Setup dotfile for ledger
 
 dot-haskell: ## Setup dotfile for haskell
 	@stow -d stow/ -t ~ haskell
-
-dot-vdirsyncer: ## Setup dotfile for vdirsyncer
-	@stow -d stow/ -t ~ vdirsyncer
 
 dot-openstack-cli: ## Setup dotfile for openstack-cli
 	@stow -d stow/ -t ~ openstack-cli

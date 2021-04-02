@@ -187,11 +187,11 @@ function checkVersionFromGithub() {
 }
 
 function checkVersionFromPip() {
-  LATEST_VERSION=$(pipLatestRelease $PIP_PACKAGE)
-  CURRENT_VERSION=$(getVersionPackagePip)
+  LATEST_VERSION=$(pipLatestRelease $1)
+  CURRENT_VERSION=$(getVersionPackagePip $1)
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
-    newVersionAvailable $NAME "$CURRENT_VERSION" "$LATEST_VERSION"
+    newVersionAvailable $1 "$CURRENT_VERSION" "$LATEST_VERSION"
   fi
   unset LATEST_VERSION;
   unset CURRENT_VERSION;
@@ -229,7 +229,7 @@ function uninstallGithub() {
 getVersionPackagePip() {
   INSTALL_DIR=$(pipPathDir $NAME)
 
-  local VET=$($INSTALL_DIR/.venv/bin/pip list | grep "^$PIP_PACKAGE ")
+  local VET=$($INSTALL_DIR/.venv/bin/pip list | grep "^$1 ")
   VET=($VET)
   echo ${VET[1]}
 }
@@ -273,7 +273,12 @@ function checkVersion() {
   fi
 
   if [ -n "$PIP_PACKAGE" ]; then 
-    checkVersionFromPip $VERSION
+    checkVersionFromPip $PIP_PACKAGE
+    if [ -n "$PIP_EXTRA_PACKAGE" ]; then
+      for package in $(echo $PIP_EXTRA_PACKAGE | tr ";" "\n"); do
+        checkVersionFromPip $package
+      done
+    fi
   fi
 }
 

@@ -10,6 +10,11 @@ if [ -z "$1" ]; then
 	exit 0
 fi
 
+if ! which wakeonlan > /dev/null; then
+	echo "check-package wakeonlan"
+	exit 
+fi
+
 case "$1" in
 	nas)
 		wakeonlan 50:3e:aa:0c:b2:5a

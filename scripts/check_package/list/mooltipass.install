@@ -1,0 +1,5 @@
+INSTALL_NAME="mooltipass"
+INSTALL_DESCRIPTION="My password"
+INSTALL_DOC="https://www.themooltipass.com/setup/"
+INSTALL_PPA="ppa:mooltipass/moolticute"
+INSTALL_NAME="moolticute"

@@ -9,6 +9,7 @@
 [alias]
     lgg = "log --all --graph --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)    %an%Creset' --abbrev-commit"
     lg = "log --all --pretty=format:'%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)    %an%Creset' --abbrev-commit"
+    lg-go = !TZ=GMT git log --all --pretty=format:'%C(yellow)v0.0.0-%cd-%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)    %an%Creset' --abbrev=12 --abbrev-commit --date "format-local:%Y%m%d%H%M%S" -10 
     lgb = !git log --pretty=format:'%C(yellow)%h%Creset %Cgreen(%ar) %C(bold blue)%an% %C(red)%d%Creset%n %s %n %b' --no-abbrev-commit -n $(($(git rev-list master..HEAD --count)+1))
     lgbedm = !git log --pretty=format:'%C(yellow)%h%Creset %Cgreen(%ar) %C(bold blue)%an% %C(red)%d%Creset%n %s %n %b' --no-abbrev-commit -n $(($(git rev-list edm..HEAD --count)+1))
     lgbf = !git log --pretty=format:'%C(yellow)%h%  %Cgreen(%ar)%Creset %C(red)%d%Creset%n%n       %s%n' --name-only -n $(git rev-list master..HEAD --count) && echo 

@@ -113,17 +113,18 @@ getVersion() {
     extractVersion $VERSION
     return
   fi
-  $1 version 2> /dev/null
+  $1 version > /dev/null
   if [ $? -eq 0 ]; then 
-    local VERSION=$($1 version)
-    extractVersion $VERSION
+    local VERSION=$($1 version 2> /dev/null)
+    extractVersion "$VERSION"
     return
   fi
   extractVersion "$($1 version)"
 }
 
 extractVersion() {
-  echo $1 | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'
+  local val=$(echo $1 | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
+  echo $val
 }
 
 ###

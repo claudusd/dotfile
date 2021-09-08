@@ -343,6 +343,7 @@ clean_vars() {
   unset INSTALL_SUBDIR_PATH;
   unset CHECK_VERSION;
   unset PIP_EXTRA_PACKAGE;
+  unset TMP_NAME_MAX_SIZE
 }
 
 clean_dependency_vars() {
@@ -369,18 +370,22 @@ if ! which curl > /dev/null; then
         check
         exit
 fi
-if [ -z "$1" ]; then 
+
+listPackage() {
   NAME_MAX_SIZE=0
-  for file in $DIRECTORY/list/*.install
+  for file in $1
   do
     NAME=$(basename $file);
     NAME=${NAME%.install}
     if [ $NAME_MAX_SIZE -le ${#NAME}  ]; then 
       NAME_MAX_SIZE=${#NAME}
     fi
+    if [ -d $file ]; then 
+      NAME_MAX_SIZE=$(($NAME_MAX_SIZE+2))
+    fi
   done
 
-  for file in $DIRECTORY/list/*.install
+  for file in $1
   do
     if [ -f $file ]; then
       NAME=$(basename $file);
@@ -401,17 +406,29 @@ if [ -z "$1" ]; then
         NAME=$(basename $file2);
         NAME=${NAME%.install}
         source $file2;
+        TMP_NAME_MAX_SIZE=$NAME_MAX_SIZE
+        NAME_MAX_SIZE=$(($NAME_MAX_SIZE-1))
         check
+        NAME_MAX_SIZE=$TMP_NAME_MAX_SIZE
         clean_vars;
       done
       GROUP=0
     fi
   done
+}
+
+if [ -z "$1" ]; then 
+  listPackage "$DIRECTORY/list/*.install"
 else
   PATH_FILE="$DIRECTORY/list/$1";
   if [[ $1 == *"/"* ]]; then 
     IFS='/' read -r -a split <<< "$1"
     PATH_FILE="$DIRECTORY/list/${split[0]}.install/${split[1]}"
+  fi
+
+  if [ -d "$PATH_FILE.install" ]; then 
+    listPackage "$PATH_FILE.install/*.install"
+    exit 0
   fi
 
   if [ -f $PATH_FILE.install ]; then

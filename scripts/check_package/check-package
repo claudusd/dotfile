@@ -100,14 +100,35 @@ function installation() {
     echo "curl -L '$INSTALL_DEB_URL' -o /tmp/$NAME.deb"
     echo "dpkg -i /tmp/$NAME.deb"
     echo "rm /tmp/$NAME.deb"
-  elif [ -n "$INSTALL_ZIP_URL" ]; then
-    INSTALL_ZIP_URL=$(rewriteUrl $INSTALL_ZIP_URL)
-    echo $INSTALL_ZIP_URL;
-    echo "curl -L '$INSTALL_ZIP_URL' -o /tmp/$NAME.zip"
-    echo "unzip /tmp/$NAME.zip -d /tmp/"
-    echo "mv /tmp/$INSTALL_NAME /usr/local/bin/$INSTALL_NAME"
-    echo "chmod +x /usr/local/bin/$INSTALL_NAME"
-    echo "rm /tmp/$NAME.zip"
+  elif [ -n "$ARCHIVE_URL" ]; then
+    ARCHIVE_URL=$(rewriteUrl $ARCHIVE_URL)
+
+    BIN_TO_MV=${INSTALL_NAME}
+    if [ -n "$ARCHIVE_BIN_NAME" ]; then
+      BIN_TO_MV=$ARCHIVE_BIN_NAME
+    fi
+
+    if [[ $ARCHIVE_URL == *zip ]]; then
+      echo "curl -L '$ARCHIVE_URL' -o /tmp/$NAME.zip"
+      echo "unzip /tmp/$NAME.zip -d /tmp/"
+      echo "mv /tmp/$INSTALL_NAME $INSTALL_PATH/$INSTALL_NAME"
+      echo "rm /tmp/$NAME.zip"
+    fi
+
+    if [[ $ARCHIVE_URL == *tar.gz ]]; then
+      echo "curl -L '$ARCHIVE_URL' -o /tmp/$NAME.tar.gz"
+      echo "tar xzf /tmp/$NAME.tar.gz -C /tmp"
+      SUB_DIR_PATH=""
+      if [ -n "$ARCHIVE_URL" ]; then 
+        SUB_DIR_PATH=$ARCHIVE_SUB_PATH
+      fi
+      echo "mv /tmp/$NAME$SUB_DIR_PATH/$BIN_TO_MV" $INSTALL_PATH
+      echo "rm /tmp/$NAME.tar.gz"
+      echo "rm -rf /tmp/$NAME"
+      unset SUB_DIR_PATH
+    fi
+    echo "chmod +x $INSTALL_PATH/$BIN_TO_MV"
+    unset BIN_TO_MV
   elif [ -n "$INSTALL_COMMAND" ]; then
     echo "$INSTALL_COMMAND"
   elif [ -n "$INSTALL_SOURCE" ]; then
@@ -172,7 +193,22 @@ function rewriteUrl() {
     LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
     URL=$(echo $URL | sed "s/--VERSION--/$LATEST_VERSION/g")
   fi
+  if [ -n "$VERSION_INFO_URL" ]; then
+    LATEST_VERSION=$(apiLatestRelease $VERSION_INFO_URL $VERSION_INFO_JQ)
+    URL=$(echo $URL | sed "s/--VERSION--/$LATEST_VERSION/g")
+  fi
   echo $URL;
+}
+
+function checkVersionFromAPI() {
+  LATEST_VERSION=$(apiLatestRelease $VERSION_INFO_URL $VERSION_INFO_JQ)
+  CURRENT_VERSION=$(getVersion $INSTALL_NAME)
+  compareVersion $CURRENT_VERSION $LATEST_VERSION
+  if [ $? -eq 1 ]; then
+    newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
+  fi
+  unset LATEST_VERSION;
+  unset CURRENT_VERSION;
 }
 
 function checkVersionFromGithub() {
@@ -207,7 +243,7 @@ function getGithuUrlPath() {
 }
 
 function getCurlCommandFromUrl() {
-  BIN_PATH="/usr/local/bin/$NAME"
+  BIN_PATH="$INSTALL_PATH/$NAME"
   if echo $1 | grep '.sh' &> /dev/null; then
     echo "curl -o- $1 | bash"
   elif echo $1 | grep '.gz' &> /dev/null; then
@@ -268,6 +304,9 @@ function checkSourceListUpdate() {
 }
 
 function checkVersion() {
+  if [ -n "$VERSION_INFO_URL" ]; then
+    checkVersionFromAPI
+  fi 
   if [ -n "$GITHUB_REPO" ]; then 
     checkVersionFromGithub $VERSION
   fi
@@ -315,6 +354,12 @@ function check() {
   fi;
 }
 
+setup_vars() {
+  if [ -z "$INSTALL_PATH" ]; then
+    INSTALL_PATH="/usr/local/bin/"
+  fi
+}
+
 clean_vars() {
   unset NAME;
   # Pre Install vars
@@ -344,6 +389,16 @@ clean_vars() {
   unset CHECK_VERSION;
   unset PIP_EXTRA_PACKAGE;
   unset TMP_NAME_MAX_SIZE
+  # This vars are use to get last version from an api
+  unset VERSION_INFO_URL;
+  unset VERSION_INFO_JQ;
+  # This vars is used to get the zip or tar.gz
+  # You can replace the version by --VERSION--
+  unset ARCHIVE_URL;
+  unset ARCHIVE_SUB_PATH;
+  unset ARCHIVE_BIN_NAME;
+  # 
+  unset INSTALL_PATH;
 }
 
 clean_dependency_vars() {
@@ -391,6 +446,7 @@ listPackage() {
       NAME=$(basename $file);
       NAME=${NAME%.install}
       source $file;
+      setup_vars
 	    if [ -f $file.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
 	      source $file.$DISTRIB_ID-$DISTRIB_CODENAME
 	    fi
@@ -438,6 +494,7 @@ else
     NAME_MAX_SIZE=${#NAME}
 
     source $PATH_FILE.install;
+    setup_vars
 
     if [ -f $PATH_FILE.install.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
         source $PATH_FILE.install.$DISTRIB_ID-$DISTRIB_CODENAME

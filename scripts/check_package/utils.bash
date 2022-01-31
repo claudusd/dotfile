@@ -72,6 +72,11 @@ writeItalic() {
     echo -e "\033[3m$1\033[0m"
 }
 
+apiLatestRelease() {
+  RESULT=$(curl -f $1 2> /dev/null)
+  echo "${RESULT}" | jq -r $2
+}
+
 githubLatestRelease() {
   RESULT=$(curl -f -u "$GITHUB_AUTH" https://api.github.com/repos/$1/releases/latest 2> /dev/null)
   if [ $? -ne 0 ]; then

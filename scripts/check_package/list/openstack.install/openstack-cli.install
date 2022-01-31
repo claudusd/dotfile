@@ -1,4 +1,4 @@
 PIP_PACKAGE="python-openstackclient"
 INSTALL_DESCRIPTION="Openstack client"
 INSTALL_NAME="openstack"
-PIP_EXTRA_PACKAGE="python-neutronclient"
+PIP_EXTRA_PACKAGE="python-neutronclient python-manilaclient"

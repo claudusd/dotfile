@@ -1,0 +1,7 @@
+INSTALL_NAME="go"
+VERSION_INFO_URL="https://go.dev/dl/?mode=json"
+VERSION_INFO_JQ=".[0].version"
+ARCHIVE_URL="https://go.dev/dl/--VERSION--.linux-amd64.tar.gz"
+ARCHIVE_SUB_PATH="/bin"
+ARCHIVE_BIN_NAME="*"
+INSTALL_PATH="/usr/local/go/bin"

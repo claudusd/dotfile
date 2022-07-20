@@ -1,0 +1,5 @@
+INSTALL_DESCRIPTION="Matrix terminal client"
+GITHUB_REPO="tulir/gomuks"
+INSTALL_SOURCE="go"
+INSTALL_DOC="https://docs.mau.fi/gomuks/installation.html"
+INSTALL_PACKAGE_REQUIRE="libolm-dev"

@@ -2,6 +2,8 @@
 
 CHAR_OK=' ✓'
 CHAR_KO=' ✗'
+CHAR_GRP_OK=' ✔'
+CHAR_GRP_KO=' ✘'
 CHAR_WARNING=' ⚠'
 CHAR_BOOK=' 📖'
 CHAR_STUDENT=' '

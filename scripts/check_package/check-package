@@ -89,6 +89,10 @@ function installation() {
     echo -e "$(writeUnderline 'Install:')"
   fi
 
+  if [ -n "$INSTALL_PACKAGE_REQUIRE" ]; then
+    echo "apt install $INSTALL_PACKAGE_REQUIRE"
+  fi
+
   if [ -n "$GPG_PUBLIC_KEYS" ]; then
     echo "gpg2 --recv-keys $GPG_PUBLIC_KEYS"
   fi
@@ -122,6 +126,7 @@ function installation() {
       if [ -n "$ARCHIVE_URL" ]; then 
         SUB_DIR_PATH=$ARCHIVE_SUB_PATH
       fi
+      echo "rm -rf $INSTALL_PATH/*"
       echo "mv /tmp/$NAME$SUB_DIR_PATH/$BIN_TO_MV" $INSTALL_PATH
       echo "rm /tmp/$NAME.tar.gz"
       echo "rm -rf /tmp/$NAME"
@@ -133,11 +138,11 @@ function installation() {
     echo "$INSTALL_COMMAND"
   elif [ -n "$INSTALL_SOURCE" ]; then
     VERSION=$(githubLatestRelease $GITHUB_REPO)
-    echo "curl -L https://github.com/golang/tools/archive/$VERSION.tar.gz | tar xz -C $INSTALL_NAME --transform 's!^[^/]\+\($\|/\)!$INSTALL_NAME\1!' -C /tmp"
+    echo "curl -L https://github.com/$GITHUB_REPO/archive/$VERSION.tar.gz | tar xz -C $INSTALL_NAME --transform 's!^[^/]\+\($\|/\)!$INSTALL_NAME\1!' -C /tmp"
     if [ -n "$INSTALL_SUBDIR_PATH" ]; then
       echo "cd /tmp/$INSTALL_NAME/$INSTALL_SUBDIR_PATH"
     else
-      echo "cd /tmp/{$INSTALL_NAME"
+      echo "cd /tmp/$INSTALL_NAME"
     fi
 
     if [ "$INSTALL_SOURCE" == "go" ]; then
@@ -153,11 +158,6 @@ function installation() {
   elif [ -n "$PIP_PACKAGE" ]; then
     installationFromPip
   elif [ -n "$PACKAGE_NAME" ]; then
-
-    if [ -n "$INSTALL_PACKAGE_REQUIRE" ]; then
-        echo "apt install $INSTALL_PACKAGE_REQUIRE"
-    fi
-
     if [ -n "$INSTALL_PPA" ]; then
         echo "add-apt-repository $INSTALL_PPA"
         echo "apt update"
@@ -450,9 +450,24 @@ listPackage() {
 	    if [ -f $file.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
 	      source $file.$DISTRIB_ID-$DISTRIB_CODENAME
 	    fi
-        check
-        clean_vars;
-    elif [ -d $file ]; then
+      check
+      clean_vars;
+      if [ -d $file.d ]; then
+        GROUP=1
+        for file2 in $file.d/*.install
+        do
+          NAME=$(basename $file2);
+          NAME=${NAME%.install}
+          source $file2;
+          TMP_NAME_MAX_SIZE=$NAME_MAX_SIZE
+          NAME_MAX_SIZE=$(($NAME_MAX_SIZE-1))
+          check
+          NAME_MAX_SIZE=$TMP_NAME_MAX_SIZE
+          clean_vars;
+        done
+        GROUP=0
+      fi
+    elif [ -d $file ] && [[ $file == *install ]]; then
       NAME=$(basename $file);
       NAME=${NAME%.install}
       echo -e "$char_DINGBAT $(writeBold ${NAME})"

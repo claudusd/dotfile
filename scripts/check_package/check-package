@@ -511,6 +511,10 @@ else
     source $PATH_FILE.install;
     setup_vars
 
+    if [ -f $PATH_FILE.install.$DISTRIB_ID ]; then
+        source $PATH_FILE.install.$DISTRIB_ID
+    fi
+
     if [ -f $PATH_FILE.install.$DISTRIB_ID-$DISTRIB_CODENAME ]; then
         source $PATH_FILE.install.$DISTRIB_ID-$DISTRIB_CODENAME
     fi

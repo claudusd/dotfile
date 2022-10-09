@@ -414,16 +414,33 @@ if ! which jq > /dev/null; then
 	writeBold "Required package" 
 	NAME="jq"
 	INSTALL_DESCRIPTION="How read json in bash"
+  setup_vars
 	check
+  installation
+  clean_vars;
 	exit 
 fi
 
 if ! which curl > /dev/null; then
 	writeBold "Required package"
-        NAME="curl"
-        INSTALL_DESCRIPTION="How call http in bash"
-        check
-        exit
+  NAME="curl"
+  INSTALL_DESCRIPTION="How call http in bash"
+  setup_vars
+  check
+  installation
+  clean_vars;
+  exit
+fi
+
+if ! which stow > /dev/null; then
+	writeBold "Required package"
+  NAME="stow"
+  INSTALL_DESCRIPTION="Manage dotfil"
+  setup_vars
+  check
+  installation
+  clean_vars;
+  exit
 fi
 
 listPackage() {

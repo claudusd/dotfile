@@ -11,7 +11,7 @@ if [ $3 -eq 0 ]; then
     echo "mkdir ${MOUNT_DIR}"
     echo "adduser $USER davfs2"
     echo "mkdir -p ${DAVFS2_CONF_DIR}"
-    echo "echo '${MOUNT_DIR} $(writeStrike WEBDAV_LOGIN) $(writeStrike WEBDAV_LOGIN)' >> $DAVFS2_SECRET"
+    echo "echo '${MOUNT_DIR} $(writeStrike WEBDAV_LOGIN) $(writeStrike WEBDAV_PASSWORD)' >> $DAVFS2_SECRET"
     echo "chown $USER:$USER $DAVFS2_SECRET"
     echo "chmod 600 $DAVFS2_SECRET"
     echo "sudo sh -c '$(writeStrike https://WEB_DAV_URL)/keepass $MOUNT_DIR davfs rw,user,noauto 0 0' >> /etc/fstab"

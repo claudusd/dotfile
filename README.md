@@ -2,13 +2,16 @@
 
 # Minimal install
 
+Add in the ``.bashrc``
+
 ``` 
-scripts/dotfile bashrc
+source ~/.dotfile
+
+for file in ~/.bashrc.d/*.bashrc;
+do
+  source "$file"
+done
 ```
 
-## Use
+``make make dot-bashrc``
 
-
-```
-make
-```

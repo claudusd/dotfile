@@ -243,6 +243,10 @@ function getGithuUrlPath() {
 }
 
 function getCurlCommandFromUrl() {
+  BIN_PATH=$NAME;
+  if [ -z $INSTALL_PATH ]; then
+    BIN_PATH="$INSTALL_PATH/$NAME"
+  fi
   BIN_PATH="$INSTALL_PATH/$NAME"
   if echo $1 | grep '.sh' &> /dev/null; then
     echo "curl -o- $1 | bash"
@@ -356,7 +360,7 @@ function check() {
 
 setup_vars() {
   if [ -z "$INSTALL_PATH" ]; then
-    INSTALL_PATH="/usr/local/bin/"
+    INSTALL_PATH="/usr/local/bin"
   fi
 }
 

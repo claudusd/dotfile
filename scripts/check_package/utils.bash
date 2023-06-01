@@ -114,19 +114,19 @@ pipLatestRelease() {
 }
 
 getVersion() {
-  $1 --version 2> /dev/null
+  $1 --version $2 2> /dev/null
   if [ $? -eq 0 ]; then 
-    local VERSION=$($1 --version)
+    local VERSION=$($1 --version $2)
     extractVersion $VERSION
     return
   fi
-  $1 version > /dev/null
+  $1 version $2 > /dev/null
   if [ $? -eq 0 ]; then 
-    local VERSION=$($1 version 2> /dev/null)
+    local VERSION=$($1 version $2 2> /dev/null)
     extractVersion "$VERSION"
     return
   fi
-  extractVersion "$($1 version)"
+  extractVersion "$($1 version $2)"
 }
 
 extractVersion() {

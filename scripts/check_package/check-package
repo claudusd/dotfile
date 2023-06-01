@@ -202,7 +202,7 @@ function rewriteUrl() {
 
 function checkVersionFromAPI() {
   LATEST_VERSION=$(apiLatestRelease $VERSION_INFO_URL $VERSION_INFO_JQ)
-  CURRENT_VERSION=$(getVersion $INSTALL_NAME)
+  CURRENT_VERSION=$(getVersion $INSTALL_NAME $VERSION_CLI_OPTIONS)
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
     newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
@@ -213,7 +213,7 @@ function checkVersionFromAPI() {
 
 function checkVersionFromGithub() {
   LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
-  CURRENT_VERSION=$(getVersion $INSTALL_NAME)
+  CURRENT_VERSION=$(getVersion $INSTALL_NAME $VERSION_CLI_OPTIONS)
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
     newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
@@ -399,6 +399,8 @@ clean_vars() {
   unset ARCHIVE_BIN_NAME;
   # 
   unset INSTALL_PATH;
+
+  unset VERSION_CLI_OPTIONS;
 }
 
 clean_dependency_vars() {

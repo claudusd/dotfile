@@ -1,0 +1,4 @@
+GITHUB_REPO="argoproj/argo-cd"
+INSTALL_DESCRIPTION="Deploy"
+GITHUB_RELEASE_NAME="argocd-linux-amd64 "
+VERSION_CLI_OPTIONS="--client"

@@ -34,3 +34,6 @@ dot-haskell: ## Setup dotfile for haskell
 
 dot-openstack-cli: ## Setup dotfile for openstack-cli
 	@stow -d stow/ -t ~ openstack-cli
+
+dot-k8s: ## Setup dotfile for kubernetes
+	@stow -d stow/ -t ~ k8s

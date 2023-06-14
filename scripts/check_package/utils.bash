@@ -75,8 +75,12 @@ writeItalic() {
 }
 
 apiLatestRelease() {
-  RESULT=$(curl -f $1 2> /dev/null)
-  echo "${RESULT}" | jq -r $2
+  RESULT=$(curl -f -L $1 2> /dev/null)
+  if [ -z $2 ]; then
+    echo "${RESULT}"
+  else
+    echo "${RESULT}" | jq -r $2
+  fi
 }
 
 githubLatestRelease() {
@@ -114,19 +118,26 @@ pipLatestRelease() {
 }
 
 getVersion() {
-  $1 --version $2 2> /dev/null
+  if [ -n "$2" ]; then 
+
+    local VERSION=$($1 $2)
+    VERSION=$(echo $VERSION | jq -r $3)
+    extractVersion $VERSION
+    return
+  fi
+  $1 --version 2> /dev/null
   if [ $? -eq 0 ]; then 
-    local VERSION=$($1 --version $2)
+    local VERSION=$($1 --version)
     extractVersion $VERSION
     return
   fi
   $1 version $2 > /dev/null
   if [ $? -eq 0 ]; then 
-    local VERSION=$($1 version $2 2> /dev/null)
+    local VERSION=$($1 version 2> /dev/null)
     extractVersion "$VERSION"
     return
   fi
-  extractVersion "$($1 version $2)"
+  extractVersion "$($1 version)"
 }
 
 extractVersion() {

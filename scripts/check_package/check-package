@@ -117,9 +117,7 @@ function installation() {
       echo "unzip /tmp/$NAME.zip -d /tmp/"
       echo "mv /tmp/$INSTALL_NAME $INSTALL_PATH/$INSTALL_NAME"
       echo "rm /tmp/$NAME.zip"
-    fi
-
-    if [[ $ARCHIVE_URL == *tar.gz ]]; then
+    elif [[ $ARCHIVE_URL == *tar.gz ]]; then
       echo "curl -L '$ARCHIVE_URL' -o /tmp/$NAME.tar.gz"
       echo "tar xzf /tmp/$NAME.tar.gz -C /tmp"
       SUB_DIR_PATH=""
@@ -131,6 +129,8 @@ function installation() {
       echo "rm /tmp/$NAME.tar.gz"
       echo "rm -rf /tmp/$NAME"
       unset SUB_DIR_PATH
+    else
+       echo "curl -L '$ARCHIVE_URL' -o $INSTALL_PATH/$INSTALL_NAME"
     fi
     echo "chmod +x $INSTALL_PATH/$BIN_TO_MV"
     unset BIN_TO_MV
@@ -202,7 +202,7 @@ function rewriteUrl() {
 
 function checkVersionFromAPI() {
   LATEST_VERSION=$(apiLatestRelease $VERSION_INFO_URL $VERSION_INFO_JQ)
-  CURRENT_VERSION=$(getVersion $INSTALL_NAME $VERSION_CLI_OPTIONS)
+  CURRENT_VERSION=$(getVersion "$INSTALL_NAME" "$VERSION_CLI_OPTIONS" "$CURRENT_VERSION_INFO_JQ")
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
     newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
@@ -211,9 +211,11 @@ function checkVersionFromAPI() {
   unset CURRENT_VERSION;
 }
 
+
+
 function checkVersionFromGithub() {
   LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
-  CURRENT_VERSION=$(getVersion $INSTALL_NAME $VERSION_CLI_OPTIONS)
+  CURRENT_VERSION=$(getVersion "$INSTALL_NAME" "$VERSION_CLI_OPTIONS" "$CURRENT_VERSION_INFO_JQ")
   compareVersion $CURRENT_VERSION $LATEST_VERSION
   if [ $? -eq 1 ]; then
     newVersionAvailable $INSTALL_NAME "$CURRENT_VERSION" "$LATEST_VERSION"
@@ -250,6 +252,17 @@ function getCurlCommandFromUrl() {
   BIN_PATH="$INSTALL_PATH/$NAME"
   if echo $1 | grep '.sh' &> /dev/null; then
     echo "curl -o- $1 | bash"
+  elif echo $1 | grep '.tar.gz' &> /dev/null; then
+    echo "curl -L $1 | tar xz -C $INSTALL_NAME --transform 's!^[^/]\+\($\|/\)!$INSTALL_NAME\1!' -C /tmp"
+
+    TMP_DIR="/tmp/$INSTALL_NAME"
+    if [ -n "$INSTALL_SUBDIR_PATH" ]; then
+      TMP_DIR="$TMP_DIR/$INSTALL_SUBDIR_PATH"
+    fi
+    echo "cp $TMP_DIR/$(ls $TMP_DIR/ | grep $INSTALL_NAME) /usr/local/bin/$INSTALL_NAME"
+    echo "chmod +x /usr/local/bin/$INSTALL_NAME"
+    echo "rm -rf $TMP_DIR"
+    unset TMP_DIR
   elif echo $1 | grep '.gz' &> /dev/null; then
     echo echo "sh -c \"curl -L '$1' 2> /dev/null | gzip -d > $BIN_PATH\""
     echo "chmod +x $BIN_PATH"
@@ -299,7 +312,7 @@ function checkSourceListUpdate() {
   if [ -n "$INSTALL_REPOSITORY_URL" ]; then
     if [[ "$INSTALL_REPOSITORY_DISTRO" != $(lsb_release -sc) ]] && [[ "$INSTALL_REPOSITORY_DISTRO" != "stable" ]]; then
       RESULT=$(curl -s -o /dev/null -w "%{http_code}" "$INSTALL_REPOSITORY_URL/dists/$(lsb_release -sc)")
-      if [ $RESULT -ne 404 ]; then
+      if [ $RESULT -ne 404 ] && [ $RESULT -ne 403 ]; then
         echo -e "$(writeOrange $CHAR_WARNING) You can replace $(writeStrike $INSTALL_REPOSITORY_DISTRO) by $(lsb_release -sc)"
         INSTALL_REPOSITORY_DISTRO=$(lsb_release -sc)
       fi
@@ -405,6 +418,7 @@ clean_vars() {
   unset INSTALL_PATH;
 
   unset VERSION_CLI_OPTIONS;
+  unset CURRENT_VERSION_INFO_JQ;
 }
 
 clean_dependency_vars() {

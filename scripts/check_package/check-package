@@ -185,6 +185,10 @@ function installation() {
 
     echo "apt install $PACKAGE_NAME $PACKAGE_NAME_EXTRA"
   fi
+
+  if [ -n "$AUTOCOMPLETE_GENERATION" ]; then
+    echo "$INSTALL_NAME $AUTOCOMPLETE_GENERATION > ~/.bashrc.d/${INSTALL_NAME}_complete.bashrc"
+  fi
 }
 
 function rewriteUrl() {
@@ -419,6 +423,8 @@ clean_vars() {
 
   unset VERSION_CLI_OPTIONS;
   unset CURRENT_VERSION_INFO_JQ;
+
+  unset AUTOCOMPLETE_GENERATION;
 }
 
 clean_dependency_vars() {

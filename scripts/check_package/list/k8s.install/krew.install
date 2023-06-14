@@ -1,0 +1,3 @@
+INSTALL_DESCRIPTION="Kubectl plugin manager"
+GITHUB_REPO="kubernetes-sigs/krew"
+GITHUB_RELEASE_NAME="krew-linux_amd64.tar.gz"

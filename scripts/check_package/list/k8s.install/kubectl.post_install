@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo "kubectl krew install ctx"
+echo "kubectl krew install ns"
+echo "kubectl krew install oidc-login"

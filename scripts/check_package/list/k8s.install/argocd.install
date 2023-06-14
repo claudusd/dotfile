@@ -1,0 +1,5 @@
+GITHUB_REPO="argoproj/argo-cd"
+INSTALL_DESCRIPTION="Gitops deploy platform for k8s"
+GITHUB_RELEASE_NAME="argocd-linux-amd64 "
+VERSION_CLI_OPTIONS="version --client -o json"
+CURRENT_VERSION_INFO_JQ=".client.Version"

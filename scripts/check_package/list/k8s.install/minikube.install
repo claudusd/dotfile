@@ -1,0 +1,3 @@
+INSTALL_DESCRIPTION="A local k8s for test"
+GITHUB_REPO="kubernetes/minikube"
+GITHUB_RELEASE_NAME="minikube-linux-amd64"

@@ -1,0 +1,5 @@
+VERSION_INFO_URL="https://dl.k8s.io/release/stable.txt"
+INSTALL_DESCRIPTION="Interract with k8s"
+ARCHIVE_URL="https://dl.k8s.io/release/--VERSION--/bin/linux/amd64/kubectl"
+VERSION_CLI_OPTIONS="version --client --output=json"
+CURRENT_VERSION_INFO_JQ=".clientVersion.gitVersion"

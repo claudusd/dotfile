@@ -8,6 +8,6 @@ function k8s_prompt {
       return
     fi
     local namespace=$(kubectl ns -c)
-    echo " $RVM_THEME_PROMPT_PREFIX$blue⁙ $green$cluster$bold_white @ $green$namespace$RVM_THEME_PROMPT_PREFIX"
+    echo " $blue$RVM_THEME_PROMPT_PREFIX$white⁙ $blue$cluster$bold_white @ $blue$namespace$RVM_THEME_PROMPT_PREFIX"
   fi
 }

@@ -259,14 +259,20 @@ function getCurlCommandFromUrl() {
   elif echo $1 | grep '.tar.gz' &> /dev/null; then
     echo "curl -L $1 | tar xz -C $INSTALL_NAME --transform 's!^[^/]\+\($\|/\)!$INSTALL_NAME\1!' -C /tmp"
 
-    TMP_DIR="/tmp/$INSTALL_NAME"
+    TMP_PATH="/tmp/$INSTALL_NAME"
     if [ -n "$INSTALL_SUBDIR_PATH" ]; then
-      TMP_DIR="$TMP_DIR/$INSTALL_SUBDIR_PATH"
+      TMP_PATH="$TMP_DIR/$INSTALL_SUBDIR_PATH"
     fi
-    echo "cp $TMP_DIR/$(ls $TMP_DIR/ | grep $INSTALL_NAME) /usr/local/bin/$INSTALL_NAME"
+    if [ -d "$TMP_PATH" ]; then
+      echo "cp $TMP_PATH/$(ls $TMP_PATH/ | grep $INSTALL_NAME) /usr/local/bin/$INSTALL_NAME"
+    else
+      echo "mv $TMP_PATH /usr/local/bin/$INSTALL_NAME"
+    fi
     echo "chmod +x /usr/local/bin/$INSTALL_NAME"
-    echo "rm -rf $TMP_DIR"
-    unset TMP_DIR
+    if [ -d "$TMP_PATH" ]; then
+      echo "rm -rf $TMP_PATH"
+    fi
+    unset TMP_PATH
   elif echo $1 | grep '.gz' &> /dev/null; then
     echo echo "sh -c \"curl -L '$1' 2> /dev/null | gzip -d > $BIN_PATH\""
     echo "chmod +x $BIN_PATH"

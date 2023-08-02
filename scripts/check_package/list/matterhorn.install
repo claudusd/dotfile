@@ -1,0 +1,5 @@
+INSTALL_DESCRIPTION="Mattermost terminal client"
+GITHUB_REPO="mattermost/desktop"
+INSTALL_SOURCE="go"
+INSTALL_DOC="https://docs.mau.fi/gomuks/installation.html"
+INSTALL_PACKAGE_REQUIRE="libolm-dev"

@@ -1,0 +1,4 @@
+PIP_PACKAGE="awscli"
+INSTALL_DESCRIPTION="Manage aws"
+INSTALL_NAME="aws"
+PIP_EXTRA_PACKAGE="awscli-plugin-endpoint"

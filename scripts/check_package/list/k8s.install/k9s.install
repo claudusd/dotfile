@@ -1,0 +1,4 @@
+GITHUB_REPO="derailed/k9s"
+INSTALL_DESCRIPTION="Better than kubectl"
+GITHUB_RELEASE_NAME="k9s_Linux_amd64.tar.gz"
+VERSION_CLI_OPTIONS="version -s"

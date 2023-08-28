@@ -162,23 +162,32 @@ function installation() {
         echo "add-apt-repository $INSTALL_PPA"
         echo "apt update"
     else
+        if [ -z "$INSTALL_REPOSITORY_NAME" ]; then
+	        INSTALL_REPOSITORY_NAME="$INSTALL_NAME"
+	      fi
         if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
-            echo "$CHAR_KEY wget -q -O- $INSTALL_REPOSITORY_KEY | sudo apt-key add -"
+            echo "$CHAR_KEY curl -sS $INSTALL_REPOSITORY_KEY | sudo gpg --dearmor -o /usr/share/keyrings/$INSTALL_REPOSITORY_NAME.gpg"
         fi;
         if [ -n "$INSTALL_REPOSITORY_URL" ]; then
             if [ -z "$INSTALL_REPOSITORY_DISTRO" ]; then
                 INSTALL_REPOSITORY_DISTRO=$(lsb_release -sc)
             fi
 	          checkSourceListUpdate
-            REPOSITORY_ARCH=""
-            if [ -n "$INSTALL_REPOSITORY_ARCH" ]; then
-              REPOSITORY_ARCH="[arch=$INSTALL_REPOSITORY_ARCH]"
+            REPOSITORY_CONFIG=""
+
+            if [ -n "$INSTALL_REPOSITORY_ARCH" ] || [ -n "$INSTALL_REPOSITORY_KEY" ]; then
+              REPOSITORY_CONFIG="["
+              if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
+                REPOSITORY_CONFIG="$REPOSITORY_CONFIG signed-by=/usr/share/keyrings/$INSTALL_REPOSITORY_NAME.gpg"
+              fi
+
+              if [ -n "$INSTALL_REPOSITORY_ARCH" ]; then
+                REPOSITORY_CONFIG="$REPOSITORY_CONFIG arch=$INSTALL_REPOSITORY_ARCH"
+              fi
+              REPOSITORY_CONFIG="$REPOSITORY_CONFIG ]"
             fi
-	          if [ -z "$INSTALL_REPOSITORY_NAME" ]; then
-	            INSTALL_REPOSITORY_NAME="$INSTALL_NAME"
-	          fi
-            echo "${CHAR_CARD_FILE_BOX}  sudo sh -c 'echo \"deb $REPOSITORY_ARCH $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" > /etc/apt/sources.list.d/$INSTALL_REPOSITORY_NAME.list'"
-            unset REPOSITORY_ARCH
+            echo "${CHAR_CARD_FILE_BOX}  sudo sh -c 'echo \"deb $REPOSITORY_CONFIG $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" >> /etc/apt/sources.list.d/$INSTALL_REPOSITORY_NAME.list'"
+            unset REPOSITORY_CONFIG
 	          echo "apt update"
         fi;
     fi

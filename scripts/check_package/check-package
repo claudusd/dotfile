@@ -166,7 +166,8 @@ function installation() {
 	        INSTALL_REPOSITORY_NAME="$INSTALL_NAME"
 	      fi
         if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
-            echo "$CHAR_KEY curl -sS $INSTALL_REPOSITORY_KEY | sudo gpg --dearmor -o /usr/share/keyrings/$INSTALL_REPOSITORY_NAME.gpg"
+            echo "$CHAR_KEY curl -sS $INSTALL_REPOSITORY_KEY | sudo gpg --dearmor -o /tmp/$INSTALL_REPOSITORY_NAME.gpg"
+            echo "$CHAR_KEY install -D -o root -g root -m 644 /tmp/$INSTALL_REPOSITORY_NAME.gpg /etc/apt/keyrings/$INSTALL_REPOSITORY_NAME.gpg"
         fi;
         if [ -n "$INSTALL_REPOSITORY_URL" ]; then
             if [ -z "$INSTALL_REPOSITORY_DISTRO" ]; then
@@ -178,7 +179,7 @@ function installation() {
             if [ -n "$INSTALL_REPOSITORY_ARCH" ] || [ -n "$INSTALL_REPOSITORY_KEY" ]; then
               REPOSITORY_CONFIG="["
               if [ -n "$INSTALL_REPOSITORY_KEY" ]; then
-                REPOSITORY_CONFIG="$REPOSITORY_CONFIG signed-by=/usr/share/keyrings/$INSTALL_REPOSITORY_NAME.gpg"
+                REPOSITORY_CONFIG="$REPOSITORY_CONFIG signed-by=/etc/apt/keyrings/$INSTALL_REPOSITORY_NAME.gpg"
               fi
 
               if [ -n "$INSTALL_REPOSITORY_ARCH" ]; then
@@ -186,7 +187,7 @@ function installation() {
               fi
               REPOSITORY_CONFIG="$REPOSITORY_CONFIG ]"
             fi
-            echo "${CHAR_CARD_FILE_BOX}  sudo sh -c 'echo \"deb $REPOSITORY_CONFIG $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" >> /etc/apt/sources.list.d/$INSTALL_REPOSITORY_NAME.list'"
+            echo "${CHAR_CARD_FILE_BOX}  sudo sh -c 'echo \"deb $REPOSITORY_CONFIG $INSTALL_REPOSITORY_URL $INSTALL_REPOSITORY_DISTRO $INSTALL_REPOSITORY_COMPONENT\" > /etc/apt/sources.list.d/$INSTALL_REPOSITORY_NAME.list'"
             unset REPOSITORY_CONFIG
 	          echo "apt update"
         fi;
@@ -204,11 +205,11 @@ function rewriteUrl() {
   local URL=$1
   if [ -n "$GITHUB_REPO" ]; then 
     LATEST_VERSION=$(githubLatestRelease $GITHUB_REPO)
-    URL=$(echo $URL | sed "s/--VERSION--/$LATEST_VERSION/g")
+    URL=$(echo $URL | sed "s/€VERSION/$LATEST_VERSION/g")
   fi
   if [ -n "$VERSION_INFO_URL" ]; then
     LATEST_VERSION=$(apiLatestRelease $VERSION_INFO_URL $VERSION_INFO_JQ)
-    URL=$(echo $URL | sed "s/--VERSION--/$LATEST_VERSION/g")
+    URL=$(echo $URL | sed "s/€VERSION/$LATEST_VERSION/g")
   fi
   echo $URL;
 }
@@ -249,11 +250,14 @@ function checkVersionFromPip() {
 }
 
 function getGithuUrlPath() {
-  VERSION=$(githubLatestRelease $GITHUB_REPO)
+  RELEASE=$(githubLatestRelease $GITHUB_REPO)
+  VERSION=$(extractVersion "$RELEASE")
+  GITHUB_RELEASE_NAME=$(echo $GITHUB_RELEASE_NAME | sed "s/€VERSION/$VERSION/g")
+
   if [ -n "$GITHUB_RAW_PATH" ]; then
-    echo "https://raw.githubusercontent.com/$GITHUB_REPO/$VERSION/$GITHUB_RAW_PATH"
+    echo "https://raw.githubusercontent.com/$GITHUB_REPO/$RELEASE/$GITHUB_RAW_PATH"
   else
-    echo "https://github.com/$GITHUB_REPO/releases/download/$VERSION/$GITHUB_RELEASE_NAME"
+    echo "https://github.com/$GITHUB_REPO/releases/download/$RELEASE/$GITHUB_RELEASE_NAME"
   fi
 }
 
@@ -270,7 +274,7 @@ function getCurlCommandFromUrl() {
 
     TMP_PATH="/tmp/$INSTALL_NAME"
     if [ -n "$INSTALL_SUBDIR_PATH" ]; then
-      TMP_PATH="$TMP_DIR/$INSTALL_SUBDIR_PATH"
+      TMP_PATH="$TMP_PATH/$INSTALL_SUBDIR_PATH"
     fi
     if [ -d "$TMP_PATH" ]; then
       echo "cp $TMP_PATH/$(ls $TMP_PATH/ | grep $INSTALL_NAME) /usr/local/bin/$INSTALL_NAME"
@@ -278,13 +282,13 @@ function getCurlCommandFromUrl() {
       echo "mv $TMP_PATH /usr/local/bin/$INSTALL_NAME"
     fi
     echo "chmod +x /usr/local/bin/$INSTALL_NAME"
-    if [ -d "$TMP_PATH" ]; then
-      echo "rm -rf $TMP_PATH"
-    fi
+    # if [ -d "$TMP_PATH" ]; then
+    #   echo "rm -rf $TMP_PATH"
+    # fi
     unset TMP_PATH
   elif echo $1 | grep '.gz' &> /dev/null; then
     echo echo "sh -c \"curl -L '$1' 2> /dev/null | gzip -d > $BIN_PATH\""
-    echo "chmod +x $BIN_PATH"
+    echo "chmod a+x $BIN_PATH"
   else
     echo "curl -L '$1' -o $BIN_PATH"
     echo "chmod +x $BIN_PATH"
@@ -429,7 +433,7 @@ clean_vars() {
   unset VERSION_INFO_URL;
   unset VERSION_INFO_JQ;
   # This vars is used to get the zip or tar.gz
-  # You can replace the version by --VERSION--
+  # You can replace the version by €VERSION
   unset ARCHIVE_URL;
   unset ARCHIVE_SUB_PATH;
   unset ARCHIVE_BIN_NAME;
